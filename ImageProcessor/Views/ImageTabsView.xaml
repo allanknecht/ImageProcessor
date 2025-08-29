@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="ImageProcessor.Views.ImageTabsView"
+    Title="Processar Imagens">
+
+    <VerticalStackLayout Padding="20" Spacing="15">
+        <Label Text="Processamento" FontSize="20" HorizontalOptions="Center" />
+
+        <toolkit:Expander>
+            <toolkit:Expander.Header>
+                <Label Text="Imagem A" FontAttributes="Bold" />
+            </toolkit:Expander.Header>
+            <toolkit:Expander.Content>
+                <Frame BackgroundColor="LightBlue" Padding="10">
+                    <Image Source="imagemA.png" HeightRequest="200" />
+                </Frame>
+            </toolkit:Expander.Content>
+
+        </toolkit:Expander>
+
+    </VerticalStackLayout>
+
+</ContentPage>
