@@ -4,23 +4,77 @@
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="ImageProcessor.Views.ImageTabsView"
-    Title="Processar Imagens">
+    Title="Process Images">
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="20,80,20, 20" Spacing="15">
+                <Label Text="Processing" FontSize="20" HorizontalOptions="Center" />
+                <!-- Image A -->
+                <Button x:Name="ButtonImageA" Text="Select Image" Clicked="OnSelectImageAClicked" />
+                <VerticalStackLayout Spacing="10" Padding="10" BackgroundColor="LightBlue">
+                    <ActivityIndicator x:Name="LoadingIndicatorA" 
+                                     IsVisible="False" 
+                                     IsRunning="False"
+                                     Color="DodgerBlue"
+                                     HeightRequest="50" />
+                    <Image x:Name="SelectedImageA" 
+                            HeightRequest="200" 
+                            Aspect="AspectFit"
+                            IsVisible="False" />
+                </VerticalStackLayout>
+                <!-- Image B -->
+                <Button x:Name="ButtonImageB" Text="Select Image" Clicked="OnSelectImageBClicked" />
+                <VerticalStackLayout Spacing="10" Padding="10" BackgroundColor="LightBlue">
+                    <ActivityIndicator x:Name="LoadingIndicatorB" 
+                                     IsVisible="False" 
+                                     IsRunning="False"
+                                     Color="DodgerBlue"
+                                     HeightRequest="50" />
+                    <Image x:Name="SelectedImageB" 
+                            HeightRequest="200" 
+                            Aspect="AspectFit"
+                            IsVisible="False" />
+                </VerticalStackLayout>
+                <!-- RESULT -->
+                <Label x:Name ="ResultLabel" Text="Resultado" FontSize="18" HorizontalOptions="Center" IsVisible="False"/>
+                <VerticalStackLayout Spacing="10" Padding="10" BackgroundColor="Lavender">
+                    <!-- Loading indicator para operações -->
+                    <ActivityIndicator x:Name="LoadingIndicatorOperation" 
+                                     IsVisible="False" 
+                                     IsRunning="False"
+                                     Color="Purple"
+                                     HeightRequest="50" />
+                    <Image x:Name="ResultImage" HeightRequest="220" Aspect="AspectFit" IsVisible="False" />
+                </VerticalStackLayout>
+                <!-- Operations -->
+                <toolkit:Expander>
+                    <toolkit:Expander.Header>
+                        <Grid Padding="12">
+                            <Label Text="Arithmetic operations" FontAttributes="Bold" />
+                        </Grid>
+                    </toolkit:Expander.Header>
+                    <VerticalStackLayout Spacing="8" Padding="12">
+                        <Button x:Name="SumButton" Text="Soma (A + B)" Clicked="OnSumClicked" />
 
-    <VerticalStackLayout Padding="20" Spacing="15">
-        <Label Text="Processamento" FontSize="20" HorizontalOptions="Center" />
+                        <!-- outros botões aqui-->
 
-        <toolkit:Expander>
-            <toolkit:Expander.Header>
-                <Label Text="Imagem A" FontAttributes="Bold" />
-            </toolkit:Expander.Header>
-            <toolkit:Expander.Content>
-                <Frame BackgroundColor="LightBlue" Padding="10">
-                    <Image Source="imagemA.png" HeightRequest="200" />
-                </Frame>
-            </toolkit:Expander.Content>
+                    </VerticalStackLayout>
+                </toolkit:Expander>
 
-        </toolkit:Expander>
-
-    </VerticalStackLayout>
-
+            </VerticalStackLayout>
+        </ScrollView>
+        <!-- Botão de reload fixo no canto superior direito -->
+        <Button Text="↻" 
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                FontSize="20"
+                FontAttributes="Bold"
+                CornerRadius="25"
+                WidthRequest="50"
+                HeightRequest="50"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Margin="15,0,15,0"
+                Clicked="OnReloadClicked" />
+    </Grid>
 </ContentPage>
