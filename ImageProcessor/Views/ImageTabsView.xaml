@@ -54,7 +54,17 @@
                         </Grid>
                     </toolkit:Expander.Header>
                     <VerticalStackLayout Spacing="8" Padding="12">
-                        <Button x:Name="SumButton" Text="Soma (A + B)" Clicked="OnSumClicked" />
+                        
+                        <Button x:Name="SumButton" Text="Sum (A + B)" Clicked="OnSumClicked" />
+
+                        <Button x:Name="SubtButton" Text="Subtraction (A - B)" Clicked="SubtButton_Clicked" />
+
+                        <HorizontalStackLayout Spacing="5">
+                            <Button x:Name="MultButton" Text="Multiplication (A x Value)" Clicked="MultButton_Clicked" />
+                            <Label Text="Type a value: " VerticalOptions="Center"/>
+                            <Entry x:Name="MultiplicationValue" Placeholder="0.1" Keyboard="Numeric"/>
+                        </HorizontalStackLayout>
+
 
                         <!-- outros botões aqui-->
 

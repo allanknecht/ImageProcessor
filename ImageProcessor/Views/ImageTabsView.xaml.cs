@@ -154,7 +154,6 @@ namespace ImageProcessor.Views
             using var data = img.Encode(SKEncodedImageFormat.Png, 100);
             var bytes = data.ToArray();
 
-            // 3) Criar um ImageSource seguro (novo stream a cada leitura)
             return ImageSource.FromStream(() => new MemoryStream(bytes));
         }
 
@@ -182,6 +181,73 @@ namespace ImageProcessor.Views
             ResultImage.IsVisible = true;
 
             // Esconde loading
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+        }
+
+
+        private async void SubtButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null || _matrixB == null)
+            {
+                await DisplayAlert("Atenção", "Selecione as duas imagens (A e B) antes de subtrair.", "OK");
+                return;
+            }
+
+            // Mostra loading
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            // Executa operações pesadas em background
+            var result = await Task.Run(() =>
+            {
+                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.Subt(_matrixA, _matrixB);
+                var src = MatrixToImageSource(sumMatrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+
+            // Esconde loading
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+        }
+
+        private async void MultButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null)
+            {
+                await DisplayAlert("Atenção", "Selecione a imagem A antes de multiplicar.", "OK");
+                return;
+            }
+
+            string valueText = MultiplicationValue.Text?.Replace(',', '.') ?? "0";
+
+            if (!float.TryParse(valueText,
+                                System.Globalization.NumberStyles.Float,
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                out float multiplicationValueVar))
+            {
+                await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
+                return;
+            }
+
+            // Resto do código permanece igual...
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            var result = await Task.Run(() =>
+            {
+                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.Multiplication(_matrixA, multiplicationValueVar);
+                var src = MatrixToImageSource(sumMatrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
             LoadingIndicatorOperation.IsVisible = false;
             LoadingIndicatorOperation.IsRunning = false;
             ResultLabel.IsVisible = true;
