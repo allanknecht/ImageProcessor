@@ -15,6 +15,8 @@ namespace ImageProcessor.Views
         private byte[] _imageABytes;
         private byte[] _imageBBytes;
 
+        private byte[] _resultImageBytes;
+
         // Matrizes de pixels
         private SkiaSharp.SKColor[,] _matrixA;
         private SkiaSharp.SKColor[,] _matrixB;
@@ -43,6 +45,9 @@ namespace ImageProcessor.Views
 
             ButtonImageA.Text = "Select Image";
             ButtonImageB.Text = "Select Image";
+
+            _resultImageBytes = null; // Limpa os bytes salvos
+            SaveResultButton.IsVisible = false; // Esconde o botão
         }
 
         private async void OnSelectImageAClicked(object sender, EventArgs e)
@@ -154,6 +159,8 @@ namespace ImageProcessor.Views
             using var data = img.Encode(SKEncodedImageFormat.Png, 100);
             var bytes = data.ToArray();
 
+            _resultImageBytes = data.ToArray();
+
             return ImageSource.FromStream(() => new MemoryStream(bytes));
         }
 
@@ -184,6 +191,7 @@ namespace ImageProcessor.Views
             LoadingIndicatorOperation.IsVisible = false;
             LoadingIndicatorOperation.IsRunning = false;
             ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
         }
 
 
@@ -214,6 +222,87 @@ namespace ImageProcessor.Views
             LoadingIndicatorOperation.IsVisible = false;
             LoadingIndicatorOperation.IsRunning = false;
             ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+        private async void SumValueButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null)
+            {
+                await DisplayAlert("Atenção", "Selecione a imagem A antes de somar.", "OK");
+                return;
+            }
+            string valueText = SumValue.Text?.Replace(',', '.') ?? "0";
+
+
+            if (!float.TryParse(valueText,
+                                System.Globalization.NumberStyles.Float,
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                out float SumValueVar))
+            {
+                await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
+                return;
+            }
+
+
+            // Mostra loading
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            // Executa operações pesadas em background
+            var result = await Task.Run(() =>
+            {
+                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.AddValue(_matrixA, SumValueVar);
+                var src = MatrixToImageSource(sumMatrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+        private async void SubtValueButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null)
+            {
+                await DisplayAlert("Atenção", "Selecione a imagem A antes de subtrair.", "OK");
+                return;
+            }
+            string valueText = SubtValue.Text?.Replace(',', '.') ?? "0";
+
+
+            if (!float.TryParse(valueText,
+                                System.Globalization.NumberStyles.Float,
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                out float SubtValueVar))
+            {
+                await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
+                return;
+            }
+
+
+            // Mostra loading
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            // Executa operações pesadas em background
+            var result = await Task.Run(() =>
+            {
+                var subtMatrix = ImageProcessor.Processing.ArithmeticOperations.SubtValue(_matrixA, SubtValueVar);
+                var src = MatrixToImageSource(subtMatrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
         }
 
         private async void MultButton_Clicked(object sender, EventArgs e)
@@ -235,7 +324,6 @@ namespace ImageProcessor.Views
                 return;
             }
 
-            // Resto do código permanece igual...
             LoadingIndicatorOperation.IsVisible = true;
             LoadingIndicatorOperation.IsRunning = true;
 
@@ -251,6 +339,141 @@ namespace ImageProcessor.Views
             LoadingIndicatorOperation.IsVisible = false;
             LoadingIndicatorOperation.IsRunning = false;
             ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+
+
+
+        private async void DivisionButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null)
+            {
+                await DisplayAlert("Atenção", "Selecione a imagem A antes de dividir.", "OK");
+                return;
+            }
+
+            string valueText = DivisionValue.Text?.Replace(',', '.') ?? "0";
+
+            if (!float.TryParse(valueText,
+                                System.Globalization.NumberStyles.Float,
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                out float DivisionValueVar))
+            {
+                await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
+                return;
+            }
+
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            var result = await Task.Run(() =>
+            {
+                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.Division(_matrixA, DivisionValueVar);
+                var src = MatrixToImageSource(sumMatrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+
+        }
+
+        // Loucuragens para salvar a imagem - não me pergunte como funciona.
+        private async Task<bool> RequestStoragePermissionsAsync()
+        {
+            try
+            {
+                var status = await Permissions.RequestAsync<Permissions.StorageWrite>();
+                return status == PermissionStatus.Granted;
+            }
+            catch (Exception)
+            {
+                return false;
+            }
+        }
+
+        // Loucuragens para salvar a imagem - não me pergunte como funciona.
+        private async void OnSaveResultClicked(object sender, EventArgs e)
+        {
+            if (_resultImageBytes == null)
+            {
+                await DisplayAlert("Atenção", "Não há imagem para salvar.", "OK");
+                return;
+            }
+
+            bool hasPermission = await RequestStoragePermissionsAsync();
+            if (!hasPermission)
+            {
+                await DisplayAlert("Erro", "Permissão para acessar armazenamento negada.", "OK");
+                return;
+            }
+
+            try
+            {
+                string fileName = $"resultado_{DateTime.Now:yyyyMMdd_HHmmss}.png";
+
+#if ANDROID
+                var picturesPath = Android.OS.Environment.GetExternalStoragePublicDirectory(Android.OS.Environment.DirectoryPictures);
+                var appFolder = new Java.IO.File(picturesPath, "ImageProcessor");
+
+                if (!appFolder.Exists())
+                    appFolder.Mkdirs();
+
+                var file = new Java.IO.File(appFolder, fileName);
+                var filePath = file.AbsolutePath;
+
+                await File.WriteAllBytesAsync(filePath, _resultImageBytes);
+
+                var context = Platform.CurrentActivity ?? Android.App.Application.Context;
+                Android.Media.MediaScannerConnection.ScanFile(context, new[] { filePath }, new[] { "image/png" }, null);
+
+                await DisplayAlert("Sucesso", $"Imagem salva em:\nPictures/ImageProcessor/{fileName}\n\nVerifique sua galeria!", "OK");
+#else
+        // Outras plataformas...
+        var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+        var filePath = Path.Combine(documentsPath, fileName);
+        
+        await File.WriteAllBytesAsync(filePath, _resultImageBytes);
+        
+        await DisplayAlert("Sucesso", $"Imagem salva em:\n{filePath}", "OK");
+#endif
+
+            }
+            catch (Exception ex)
+            {
+                await DisplayAlert("Erro", $"Não foi possível salvar:\n{ex.Message}", "OK");
+            }
+        }
+
+        private async void ConvertToGrayScale_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null)
+            {
+                await DisplayAlert("Atenção", "Selecione a imagem A antes de converter.", "OK");
+                return;
+            }
+
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            var result = await Task.Run(() =>
+            {
+                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.ConvertToGrayScale(_matrixA);
+                var src = MatrixToImageSource(sumMatrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
         }
     }
 }

@@ -93,8 +93,72 @@ namespace ImageProcessor.Processing
             return result;
         }
 
+        public static SKColor[,] AddValue(SKColor[,] a, float SumValue)
+        {
 
-        public static SKColor[,] Multiplication(SKColor[,] a, float multiplicationValue)
+            int hA = a.GetLength(0); // altura de A
+            int wA = a.GetLength(1); // largura de A
+
+
+            var result = new SKColor[hA, wA];
+
+            for (int y = 0; y < hA; y++)
+            {
+                for (int x = 0; x < wA; x++)
+                {
+                    var colorA = a[y, x];
+
+                    float red = colorA.Red + SumValue;
+                    float green = colorA.Green + SumValue;
+                    float blue = colorA.Blue + SumValue;
+
+
+                    byte rOut = (byte)Math.Min(red, 255);
+                    byte gOut = (byte)Math.Min(green, 255);
+                    byte bOut = (byte)Math.Min(blue, 255);
+
+                    byte aOut = colorA.Alpha;
+
+                    result[y, x] = new SKColor(rOut, gOut, bOut, aOut);
+                }
+            }
+            return result;
+        }
+
+
+        public static SKColor[,] SubtValue(SKColor[,] a, float SumValue)
+        {
+
+            int hA = a.GetLength(0); // altura de A
+            int wA = a.GetLength(1); // largura de A
+
+
+            var result = new SKColor[hA, wA];
+
+            for (int y = 0; y < hA; y++)
+            {
+                for (int x = 0; x < wA; x++)
+                {
+                    var colorA = a[y, x];
+
+                    float red = colorA.Red - SumValue;
+                    float green = colorA.Green - SumValue;
+                    float blue = colorA.Blue - SumValue;
+
+
+                    byte rOut = (byte)Math.Max(red, 0);
+                    byte gOut = (byte)Math.Max(green, 0);
+                    byte bOut = (byte)Math.Max(blue, 0);
+
+                    byte aOut = colorA.Alpha;
+
+                    result[y, x] = new SKColor(rOut, gOut, bOut, aOut);
+                }
+            }
+            return result;
+        }
+
+                public static SKColor[,] Multiplication(SKColor[,] a, float multiplicationValue)
         {
             int hA = a.GetLength(0);
             int wA = a.GetLength(1);
@@ -123,10 +187,62 @@ namespace ImageProcessor.Processing
             return result;
         }
 
+        public static SKColor[,] Division(SKColor[,] a, float DivisionValue)
+        {
+            int hA = a.GetLength(0);
+            int wA = a.GetLength(1);
+
+            var result = new SKColor[hA, wA];
+
+            for (int y = 0; y < hA; y++)
+            {
+                for (int x = 0; x < wA; x++)
+                {
+                    var colorA = a[y, x];
+
+                    float red = colorA.Red / DivisionValue;
+                    float green = colorA.Green / DivisionValue;
+                    float blue = colorA.Blue / DivisionValue;
+
+                    byte rOut = (byte)MathF.Min(MathF.Max(red, 0f), 255f);
+                    byte gOut = (byte)MathF.Min(MathF.Max(green, 0f), 255f);
+                    byte bOut = (byte)MathF.Min(MathF.Max(blue, 0f), 255f);
+
+                    byte aOut = colorA.Alpha;
+
+                    result[y, x] = new SKColor(rOut, gOut, bOut, aOut);
+                }
+            }
+            return result;
+        }
 
 
+        public static SKColor[,] ConvertToGrayScale(SKColor[,] a)
+        {
+            int hA = a.GetLength(0);
+            int wA = a.GetLength(1);
 
+            var result = new SKColor[hA, wA];
 
+            for (int y = 0; y < hA; y++)
+            {
+                for (int x = 0; x < wA; x++)
+                {
+                    var colorA = a[y, x];
+
+                    float GrayScalePixelValue = (colorA.Red + colorA.Green + colorA.Blue) / 3;
+
+                    byte rOut = (byte)MathF.Min(MathF.Max(GrayScalePixelValue, 0f), 255f);
+                    byte gOut = (byte)MathF.Min(MathF.Max(GrayScalePixelValue, 0f), 255f);
+                    byte bOut = (byte)MathF.Min(MathF.Max(GrayScalePixelValue, 0f), 255f);
+
+                    byte aOut = colorA.Alpha;
+
+                    result[y, x] = new SKColor(rOut, gOut, bOut, aOut);
+                }
+            }
+            return result;
+        }
 
     }
 }

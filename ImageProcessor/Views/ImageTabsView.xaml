@@ -45,6 +45,8 @@
                                      Color="Purple"
                                      HeightRequest="50" />
                     <Image x:Name="ResultImage" HeightRequest="220" Aspect="AspectFit" IsVisible="False" />
+
+                    <Button x:Name="SaveResultButton" Text="💾 Salvar" Clicked="OnSaveResultClicked" IsVisible="False" BackgroundColor="Green" TextColor="White" />
                 </VerticalStackLayout>
                 <!-- Operations -->
                 <toolkit:Expander>
@@ -57,14 +59,34 @@
                         
                         <Button x:Name="SumButton" Text="Sum (A + B)" Clicked="OnSumClicked" />
 
-                        <Button x:Name="SubtButton" Text="Subtraction (A - B)" Clicked="SubtButton_Clicked" />
 
                         <HorizontalStackLayout Spacing="5">
-                            <Button x:Name="MultButton" Text="Multiplication (A x Value)" Clicked="MultButton_Clicked" />
+                            <Button x:Name="SumValueButton" Text="Sum (A + Value)" Clicked="SumValueButton_Clicked" WidthRequest="160"/>
+                            <Label Text="Type a value: " VerticalOptions="Center"/>
+                            <Entry x:Name="SumValue" Placeholder="0.1" Keyboard="Numeric"/>
+                        </HorizontalStackLayout>
+
+
+                        <Button x:Name="SubtButton" Text="Subtraction (A - B)" Clicked="SubtButton_Clicked" />
+
+                        <HorizontalStackLayout Spacing="5" Margin="0,0,0,16">
+                            <Button x:Name="SubtValueButton" Text="Subtract (A - Value)" Clicked="SubtValueButton_Clicked" WidthRequest="160"/>
+                            <Label Text="Type a value: " VerticalOptions="Center"/>
+                            <Entry x:Name="SubtValue" Placeholder="0.1" Keyboard="Numeric"/>
+                        </HorizontalStackLayout>
+
+                        <HorizontalStackLayout Spacing="5">
+                            <Button x:Name="MultButton" Text="Multiplication (A x Value)" Clicked="MultButton_Clicked" WidthRequest="160"/>
                             <Label Text="Type a value: " VerticalOptions="Center"/>
                             <Entry x:Name="MultiplicationValue" Placeholder="0.1" Keyboard="Numeric"/>
                         </HorizontalStackLayout>
+                        <HorizontalStackLayout Spacing="5">
+                            <Button x:Name="DivisionButton" Text="Division (A / Value)" Clicked="DivisionButton_Clicked" WidthRequest="160" Margin="0,0,0,16"/>
+                            <Label Text="Type a value: " VerticalOptions="Center"/>
+                            <Entry x:Name="DivisionValue" Placeholder="0.1" Keyboard="Numeric"/>
+                        </HorizontalStackLayout>
 
+                        <Button x:Name="ConvertToGrayScale" Text="Convert to Gray Scale" Clicked="ConvertToGrayScale_Clicked"/>
 
                         <!-- outros botões aqui-->
 
