@@ -179,8 +179,8 @@ namespace ImageProcessor.Views
             // Executa operações pesadas em background
             var result = await Task.Run(() =>
             {
-                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.Add(_matrixA, _matrixB);
-                var src = MatrixToImageSource(sumMatrix);
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.Add(_matrixA, _matrixB);
+                var src = MatrixToImageSource(Matrix);
                 return src;
             });
 
@@ -210,8 +210,8 @@ namespace ImageProcessor.Views
             // Executa operações pesadas em background
             var result = await Task.Run(() =>
             {
-                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.Subt(_matrixA, _matrixB);
-                var src = MatrixToImageSource(sumMatrix);
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.Subt(_matrixA, _matrixB);
+                var src = MatrixToImageSource(Matrix);
                 return src;
             });
 
@@ -252,8 +252,8 @@ namespace ImageProcessor.Views
             // Executa operações pesadas em background
             var result = await Task.Run(() =>
             {
-                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.AddValue(_matrixA, SumValueVar);
-                var src = MatrixToImageSource(sumMatrix);
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.AddValue(_matrixA, SumValueVar);
+                var src = MatrixToImageSource(Matrix);
                 return src;
             });
 
@@ -329,8 +329,8 @@ namespace ImageProcessor.Views
 
             var result = await Task.Run(() =>
             {
-                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.Multiplication(_matrixA, multiplicationValueVar);
-                var src = MatrixToImageSource(sumMatrix);
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.Multiplication(_matrixA, multiplicationValueVar);
+                var src = MatrixToImageSource(Matrix);
                 return src;
             });
 
@@ -364,13 +364,19 @@ namespace ImageProcessor.Views
                 return;
             }
 
+            if (Math.Abs(DivisionValueVar) < float.Epsilon)
+            {
+                await DisplayAlert("Erro", "Não é possível dividir por zero", "OK");
+                return;
+            }
+
             LoadingIndicatorOperation.IsVisible = true;
             LoadingIndicatorOperation.IsRunning = true;
 
             var result = await Task.Run(() =>
             {
-                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.Division(_matrixA, DivisionValueVar);
-                var src = MatrixToImageSource(sumMatrix);
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.Division(_matrixA, DivisionValueVar);
+                var src = MatrixToImageSource(Matrix);
                 return src;
             });
 
@@ -434,7 +440,7 @@ namespace ImageProcessor.Views
 
                 await DisplayAlert("Sucesso", $"Imagem salva em:\nPictures/ImageProcessor/{fileName}\n\nVerifique sua galeria!", "OK");
 #else
-        // Outras plataformas...
+
         var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
         var filePath = Path.Combine(documentsPath, fileName);
         
@@ -463,8 +469,155 @@ namespace ImageProcessor.Views
 
             var result = await Task.Run(() =>
             {
-                var sumMatrix = ImageProcessor.Processing.ArithmeticOperations.ConvertToGrayScale(_matrixA);
-                var src = MatrixToImageSource(sumMatrix);
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.ConvertToGrayScale(_matrixA);
+                var src = MatrixToImageSource(Matrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+
+        private async void FlipLeftToRight_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null)
+            {
+                await DisplayAlert("Atenção", "Selecione a imagem A antes de converter.", "OK");
+                return;
+            }
+
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            var result = await Task.Run(() =>
+            {
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.FlipLeftToRight(_matrixA);
+                var src = MatrixToImageSource(Matrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+        private async void FlipTopToBottom_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null)
+            {
+                await DisplayAlert("Atenção", "Selecione a imagem A antes de converter.", "OK");
+                return;
+            }
+
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            var result = await Task.Run(() =>
+            {
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.FlipTopToBottom(_matrixA);
+                var src = MatrixToImageSource(Matrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+        private async void AbsoluteDifferenceButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null || _matrixB == null)
+            {
+                await DisplayAlert("Atenção", "Selecione as duas imagens (A e B) antes de calcular a diferença.", "OK");
+                return;
+            }
+
+            // Mostra loading
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            // Executa operações pesadas em background
+            var result = await Task.Run(() =>
+            {
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.AbsoluteDifference(_matrixA, _matrixB);
+                var src = MatrixToImageSource(Matrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+
+            // Esconde loading
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+
+
+        private async void BlendingButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null || _matrixB == null)
+            {
+                await DisplayAlert("Atenção", "Selecione as duas imagens (A e B) antes de fazer o blending.", "OK");
+                return;
+            }
+
+            string valueText = BlendingRatio.Text?.Replace(',', '.') ?? "0.5";
+            if (!float.TryParse(valueText,
+                                System.Globalization.NumberStyles.Float,
+                                System.Globalization.CultureInfo.InvariantCulture,
+                                out float blendingRatioVar))
+            {
+                await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
+                return;
+            }
+
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            var result = await Task.Run(() =>
+            {
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.LinearBlending(_matrixA, _matrixB, blendingRatioVar);
+                var src = MatrixToImageSource(Matrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+        private async void AverageButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null || _matrixB == null)
+            {
+                await DisplayAlert("Atenção", "Selecione as duas imagens (A e B) antes de calcular a média.", "OK");
+                return;
+            }
+
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            var result = await Task.Run(() =>
+            {
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.Average(_matrixA, _matrixB);
+                var src = MatrixToImageSource(Matrix);
                 return src;
             });
 

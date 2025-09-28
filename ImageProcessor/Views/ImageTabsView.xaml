@@ -5,97 +5,207 @@
     xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
     x:Class="ImageProcessor.Views.ImageTabsView"
     Title="Process Images">
+
     <Grid>
         <ScrollView>
-            <VerticalStackLayout Padding="20,80,20, 20" Spacing="15">
-                <Label Text="Processing" FontSize="20" HorizontalOptions="Center" />
+            <VerticalStackLayout Padding="20,80,20,20" Spacing="15">
+
+                <!-- Header -->
+                <Label Text="Processing" 
+                       FontSize="20" 
+                       HorizontalOptions="Center" />
+
+                <!-- Image Selection Section -->
                 <!-- Image A -->
-                <Button x:Name="ButtonImageA" Text="Select Image" Clicked="OnSelectImageAClicked" />
-                <VerticalStackLayout Spacing="10" Padding="10" BackgroundColor="LightBlue">
+                <Button x:Name="ButtonImageA" 
+                        Text="Select Image A" 
+                        Clicked="OnSelectImageAClicked" />
+
+                <VerticalStackLayout Spacing="10" 
+                                   Padding="10" 
+                                   BackgroundColor="LightBlue">
                     <ActivityIndicator x:Name="LoadingIndicatorA" 
                                      IsVisible="False" 
                                      IsRunning="False"
                                      Color="DodgerBlue"
                                      HeightRequest="50" />
                     <Image x:Name="SelectedImageA" 
-                            HeightRequest="200" 
-                            Aspect="AspectFit"
-                            IsVisible="False" />
+                           HeightRequest="200" 
+                           Aspect="AspectFit"
+                           IsVisible="False" />
                 </VerticalStackLayout>
+
                 <!-- Image B -->
-                <Button x:Name="ButtonImageB" Text="Select Image" Clicked="OnSelectImageBClicked" />
-                <VerticalStackLayout Spacing="10" Padding="10" BackgroundColor="LightBlue">
+                <Button x:Name="ButtonImageB" 
+                        Text="Select Image B" 
+                        Clicked="OnSelectImageBClicked" />
+
+                <VerticalStackLayout Spacing="10" 
+                                   Padding="10" 
+                                   BackgroundColor="LightBlue">
                     <ActivityIndicator x:Name="LoadingIndicatorB" 
                                      IsVisible="False" 
                                      IsRunning="False"
                                      Color="DodgerBlue"
                                      HeightRequest="50" />
                     <Image x:Name="SelectedImageB" 
-                            HeightRequest="200" 
-                            Aspect="AspectFit"
-                            IsVisible="False" />
+                           HeightRequest="200" 
+                           Aspect="AspectFit"
+                           IsVisible="False" />
                 </VerticalStackLayout>
-                <!-- RESULT -->
-                <Label x:Name ="ResultLabel" Text="Resultado" FontSize="18" HorizontalOptions="Center" IsVisible="False"/>
-                <VerticalStackLayout Spacing="10" Padding="10" BackgroundColor="Lavender">
-                    <!-- Loading indicator para operações -->
+
+                <!-- Result Section -->
+                <Label x:Name="ResultLabel" 
+                       Text="Resultado" 
+                       FontSize="18" 
+                       HorizontalOptions="Center" 
+                       IsVisible="False"/>
+
+                <VerticalStackLayout Spacing="10" 
+                                   Padding="10" 
+                                   BackgroundColor="Lavender">
                     <ActivityIndicator x:Name="LoadingIndicatorOperation" 
                                      IsVisible="False" 
                                      IsRunning="False"
                                      Color="Purple"
                                      HeightRequest="50" />
-                    <Image x:Name="ResultImage" HeightRequest="220" Aspect="AspectFit" IsVisible="False" />
-
-                    <Button x:Name="SaveResultButton" Text="💾 Salvar" Clicked="OnSaveResultClicked" IsVisible="False" BackgroundColor="Green" TextColor="White" />
+                    <Image x:Name="ResultImage" 
+                           HeightRequest="220" 
+                           Aspect="AspectFit" 
+                           IsVisible="False" />
+                    <Button x:Name="SaveResultButton" 
+                            Text="💾 Salvar" 
+                            Clicked="OnSaveResultClicked" 
+                            IsVisible="False" 
+                            BackgroundColor="Green" 
+                            TextColor="White" />
                 </VerticalStackLayout>
-                <!-- Operations -->
+
+                <!-- Operations Section -->
                 <toolkit:Expander>
                     <toolkit:Expander.Header>
                         <Grid Padding="12">
-                            <Label Text="Arithmetic operations" FontAttributes="Bold" />
+                            <Label Text="Arithmetic Operations" 
+                                   FontAttributes="Bold" />
                         </Grid>
                     </toolkit:Expander.Header>
+
                     <VerticalStackLayout Spacing="8" Padding="12">
-                        
-                        <Button x:Name="SumButton" Text="Sum (A + B)" Clicked="OnSumClicked" />
 
+                        <!-- Basic Operations -->
+                        <Label Text="Image Operations" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               Margin="0,0,0,8"/>
 
-                        <HorizontalStackLayout Spacing="5">
-                            <Button x:Name="SumValueButton" Text="Sum (A + Value)" Clicked="SumValueButton_Clicked" WidthRequest="160"/>
-                            <Label Text="Type a value: " VerticalOptions="Center"/>
-                            <Entry x:Name="SumValue" Placeholder="0.1" Keyboard="Numeric"/>
+                        <Button x:Name="SumButton" 
+                                Text="Sum (A + B)" 
+                                Clicked="OnSumClicked" />
+
+                        <Button x:Name="SubtButton" 
+                                Text="Subtraction (A - B)" 
+                                Clicked="SubtButton_Clicked" />
+                        <Button x:Name="AbsoluteDifferenceButton" 
+                                Text="Absolute Difference (A - B)" 
+                                Clicked="AbsoluteDifferenceButton_Clicked" />
+
+                        <Button x:Name="AverageButton" 
+                                Text="Average (A + B)" 
+                                Clicked="AverageButton_Clicked"/>
+
+                        <!-- Value Operations -->
+                        <Label Text="Value Operations" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               Margin="0,16,0,8"/>
+
+                        <HorizontalStackLayout Spacing="8">
+                            <Button x:Name="SumValueButton" 
+                                    Text="Sum (A + Value)" 
+                                    Clicked="SumValueButton_Clicked" 
+                                    WidthRequest="160"/>
+                            <Label Text="Value:" 
+                                   VerticalOptions="Center"/>
+                            <Entry x:Name="SumValue" 
+                                   Placeholder="0.1" 
+                                   Keyboard="Numeric"
+                                   WidthRequest="80"/>
                         </HorizontalStackLayout>
 
-
-                        <Button x:Name="SubtButton" Text="Subtraction (A - B)" Clicked="SubtButton_Clicked" />
-
-                        <HorizontalStackLayout Spacing="5" Margin="0,0,0,16">
-                            <Button x:Name="SubtValueButton" Text="Subtract (A - Value)" Clicked="SubtValueButton_Clicked" WidthRequest="160"/>
-                            <Label Text="Type a value: " VerticalOptions="Center"/>
-                            <Entry x:Name="SubtValue" Placeholder="0.1" Keyboard="Numeric"/>
+                        <HorizontalStackLayout Spacing="8">
+                            <Button x:Name="SubtValueButton" 
+                                    Text="Subtract (A - Value)" 
+                                    Clicked="SubtValueButton_Clicked" 
+                                    WidthRequest="160"/>
+                            <Label Text="Value:" 
+                                   VerticalOptions="Center"/>
+                            <Entry x:Name="SubtValue" 
+                                   Placeholder="0.1" 
+                                   Keyboard="Numeric"
+                                   WidthRequest="80"/>
                         </HorizontalStackLayout>
 
-                        <HorizontalStackLayout Spacing="5">
-                            <Button x:Name="MultButton" Text="Multiplication (A x Value)" Clicked="MultButton_Clicked" WidthRequest="160"/>
-                            <Label Text="Type a value: " VerticalOptions="Center"/>
-                            <Entry x:Name="MultiplicationValue" Placeholder="0.1" Keyboard="Numeric"/>
-                        </HorizontalStackLayout>
-                        <HorizontalStackLayout Spacing="5">
-                            <Button x:Name="DivisionButton" Text="Division (A / Value)" Clicked="DivisionButton_Clicked" WidthRequest="160" Margin="0,0,0,16"/>
-                            <Label Text="Type a value: " VerticalOptions="Center"/>
-                            <Entry x:Name="DivisionValue" Placeholder="0.1" Keyboard="Numeric"/>
+                        <HorizontalStackLayout Spacing="8">
+                            <Button x:Name="MultButton" 
+                                    Text="Multiply (A × Value)" 
+                                    Clicked="MultButton_Clicked" 
+                                    WidthRequest="160"/>
+                            <Label Text="Value:" 
+                                   VerticalOptions="Center"/>
+                            <Entry x:Name="MultiplicationValue" 
+                                   Placeholder="0.1" 
+                                   Keyboard="Numeric"
+                                   WidthRequest="80"/>
                         </HorizontalStackLayout>
 
-                        <Button x:Name="ConvertToGrayScale" Text="Convert to Gray Scale" Clicked="ConvertToGrayScale_Clicked"/>
+                        <HorizontalStackLayout Spacing="8">
+                            <Button x:Name="DivisionButton" 
+                                    Text="Divide (A ÷ Value)" 
+                                    Clicked="DivisionButton_Clicked" 
+                                    WidthRequest="160"/>
+                            <Label Text="Value:" 
+                                   VerticalOptions="Center"/>
+                            <Entry x:Name="DivisionValue" 
+                                   Placeholder="0.1" 
+                                   Keyboard="Numeric"
+                                   WidthRequest="80"/>
+                        </HorizontalStackLayout>
 
-                        <!-- outros botões aqui-->
+                        <HorizontalStackLayout Spacing="8">
+                            <Button x:Name="BlendingButton" Text="Linear Blending (A ⊕ B)" Clicked="BlendingButton_Clicked" WidthRequest="160"/>
+                            <Label Text="Ratio:" VerticalOptions="Center"/>
+                            <Entry x:Name="BlendingRatio" Placeholder="0.5" Keyboard="Numeric" WidthRequest="80"/>
+                        </HorizontalStackLayout>
+
+                        <!-- Image Transformations -->
+                        <Label Text="Image Transformations" 
+                               FontSize="16" 
+                               FontAttributes="Bold" 
+                               Margin="0,16,0,8"/>
+
+                        <Button x:Name="ConvertToGrayScale" 
+                                Text="Convert to Grayscale" 
+                                Clicked="ConvertToGrayScale_Clicked" />
+
+                        <Grid ColumnDefinitions="*,*" 
+                              ColumnSpacing="8">
+                            <Button x:Name="FlipLeftToRight" 
+                                    Text="Flip Horizontal" 
+                                    Clicked="FlipLeftToRight_Clicked"
+                                    Grid.Column="0"/>
+                            <Button x:Name="FlipTopToBottom" 
+                                    Text="Flip Vertical" 
+                                    Clicked="FlipTopToBottom_Clicked"
+                                    Grid.Column="1"/>
+                        </Grid>
 
                     </VerticalStackLayout>
                 </toolkit:Expander>
 
             </VerticalStackLayout>
         </ScrollView>
-        <!-- Botão de reload fixo no canto superior direito -->
+
+        <!-- Reload Button - Fixed Position -->
         <Button Text="↻" 
                 BackgroundColor="DodgerBlue"
                 TextColor="White"
@@ -106,7 +216,7 @@
                 HeightRequest="50"
                 HorizontalOptions="End"
                 VerticalOptions="Start"
-                Margin="15,0,15,0"
+                Margin="15,30,15,0"
                 Clicked="OnReloadClicked" />
     </Grid>
 </ContentPage>
