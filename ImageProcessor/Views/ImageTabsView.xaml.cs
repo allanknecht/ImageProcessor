@@ -6,6 +6,8 @@ using Microsoft.Maui.Storage;
 using Microsoft.Maui.Media;
 using SkiaSharp;
 using ImageProcessor.Processing;
+using Microcharts;
+using System.Linq;
 
 namespace ImageProcessor.Views
 {
@@ -34,20 +36,20 @@ namespace ImageProcessor.Views
             SelectedImageB.IsVisible = false;
             ResultImage.Source = null;
             ResultImage.IsVisible = false;
-
-            // Esconde os loading indicators
             LoadingIndicatorA.IsVisible = false;
             LoadingIndicatorA.IsRunning = false;
             LoadingIndicatorB.IsVisible = false;
             LoadingIndicatorB.IsRunning = false;
             LoadingIndicatorOperation.IsVisible = false;
             LoadingIndicatorOperation.IsRunning = false;
-
             ButtonImageA.Text = "Select Image";
             ButtonImageB.Text = "Select Image";
-
-            _resultImageBytes = null; // Limpa os bytes salvos
-            SaveResultButton.IsVisible = false; // Esconde o botão
+            _resultImageBytes = null;
+            SaveResultButton.IsVisible = false;
+            HistogramChartBefore.Chart = null;
+            HistogramChartAfter.Chart = null;
+            HistogramContainer.IsVisible = false; 
+            HistogramContainer.IsVisible = false;
         }
 
         private async void OnSelectImageAClicked(object sender, EventArgs e)
@@ -194,7 +196,6 @@ namespace ImageProcessor.Views
             SaveResultButton.IsVisible = true;
         }
 
-
         private async void SubtButton_Clicked(object sender, EventArgs e)
         {
             if (_matrixA == null || _matrixB == null)
@@ -234,7 +235,6 @@ namespace ImageProcessor.Views
             }
             string valueText = SumValue.Text?.Replace(',', '.') ?? "0";
 
-
             if (!float.TryParse(valueText,
                                 System.Globalization.NumberStyles.Float,
                                 System.Globalization.CultureInfo.InvariantCulture,
@@ -243,7 +243,6 @@ namespace ImageProcessor.Views
                 await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
                 return;
             }
-
 
             // Mostra loading
             LoadingIndicatorOperation.IsVisible = true;
@@ -274,7 +273,6 @@ namespace ImageProcessor.Views
             }
             string valueText = SubtValue.Text?.Replace(',', '.') ?? "0";
 
-
             if (!float.TryParse(valueText,
                                 System.Globalization.NumberStyles.Float,
                                 System.Globalization.CultureInfo.InvariantCulture,
@@ -283,7 +281,6 @@ namespace ImageProcessor.Views
                 await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
                 return;
             }
-
 
             // Mostra loading
             LoadingIndicatorOperation.IsVisible = true;
@@ -342,9 +339,6 @@ namespace ImageProcessor.Views
             SaveResultButton.IsVisible = true;
         }
 
-
-
-
         private async void DivisionButton_Clicked(object sender, EventArgs e)
         {
             if (_matrixA == null)
@@ -386,10 +380,8 @@ namespace ImageProcessor.Views
             LoadingIndicatorOperation.IsRunning = false;
             ResultLabel.IsVisible = true;
             SaveResultButton.IsVisible = true;
-
         }
 
-        // Loucuragens para salvar a imagem - não me pergunte como funciona.
         private async Task<bool> RequestStoragePermissionsAsync()
         {
             try
@@ -403,7 +395,6 @@ namespace ImageProcessor.Views
             }
         }
 
-        // Loucuragens para salvar a imagem - não me pergunte como funciona.
         private async void OnSaveResultClicked(object sender, EventArgs e)
         {
             if (_resultImageBytes == null)
@@ -440,15 +431,13 @@ namespace ImageProcessor.Views
 
                 await DisplayAlert("Sucesso", $"Imagem salva em:\nPictures/ImageProcessor/{fileName}\n\nVerifique sua galeria!", "OK");
 #else
+                var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
+                var filePath = Path.Combine(documentsPath, fileName);
 
-        var documentsPath = Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments);
-        var filePath = Path.Combine(documentsPath, fileName);
-        
-        await File.WriteAllBytesAsync(filePath, _resultImageBytes);
-        
-        await DisplayAlert("Sucesso", $"Imagem salva em:\n{filePath}", "OK");
+                await File.WriteAllBytesAsync(filePath, _resultImageBytes);
+
+                await DisplayAlert("Sucesso", $"Imagem salva em:\n{filePath}", "OK");
 #endif
-
             }
             catch (Exception ex)
             {
@@ -481,7 +470,6 @@ namespace ImageProcessor.Views
             ResultLabel.IsVisible = true;
             SaveResultButton.IsVisible = true;
         }
-
 
         private async void FlipLeftToRight_Clicked(object sender, EventArgs e)
         {
@@ -543,11 +531,9 @@ namespace ImageProcessor.Views
                 return;
             }
 
-            // Mostra loading
             LoadingIndicatorOperation.IsVisible = true;
             LoadingIndicatorOperation.IsRunning = true;
 
-            // Executa operações pesadas em background
             var result = await Task.Run(() =>
             {
                 var Matrix = ImageProcessor.Processing.ArithmeticOperations.AbsoluteDifference(_matrixA, _matrixB);
@@ -558,14 +544,11 @@ namespace ImageProcessor.Views
             ResultImage.Source = result;
             ResultImage.IsVisible = true;
 
-            // Esconde loading
             LoadingIndicatorOperation.IsVisible = false;
             LoadingIndicatorOperation.IsRunning = false;
             ResultLabel.IsVisible = true;
             SaveResultButton.IsVisible = true;
         }
-
-
 
         private async void BlendingButton_Clicked(object sender, EventArgs e)
         {
@@ -627,6 +610,130 @@ namespace ImageProcessor.Views
             LoadingIndicatorOperation.IsRunning = false;
             ResultLabel.IsVisible = true;
             SaveResultButton.IsVisible = true;
+        }
+
+        private async void NegativeButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null)
+            {
+                await DisplayAlert("Atenção", "Selecione a imagem A antes de converter.", "OK");
+                return;
+            }
+
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            var result = await Task.Run(() =>
+            {
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.ImageNegative(_matrixA);
+                var src = MatrixToImageSource(Matrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+        private async void ThresholdButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null)
+            {
+                await DisplayAlert("Atenção", "Selecione a imagem A antes de converter.", "OK");
+                return;
+            }
+
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            var result = await Task.Run(() =>
+            {
+                var Matrix = ImageProcessor.Processing.ArithmeticOperations.Thresholding(_matrixA);
+                var src = MatrixToImageSource(Matrix);
+                return src;
+            });
+
+            ResultImage.Source = result;
+            ResultImage.IsVisible = true;
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+        private async void HistogramEqualizationButton_Clicked(object sender, EventArgs e)
+        {
+            if (_matrixA == null)
+            {
+                await DisplayAlert("Atenção", "Selecione a imagem A antes de converter.", "OK");
+                return;
+            }
+
+            LoadingIndicatorOperation.IsVisible = true;
+            LoadingIndicatorOperation.IsRunning = true;
+
+            var result = await Task.Run(() =>
+            {
+                var gray = ImageProcessor.Processing.ArithmeticOperations.ConvertToGrayScale(_matrixA);
+
+                // Calcula histograma ANTES da equalização
+                var histBefore = ImageProcessor.Processing.ArithmeticOperations.GetHistogram(gray);
+
+                var eq = ImageProcessor.Processing.ArithmeticOperations.HistogramEqualization(gray);
+
+                // Calcula histograma DEPOIS da equalização
+                var histAfter = ImageProcessor.Processing.ArithmeticOperations.GetHistogram(eq);
+
+                return new { Image = MatrixToImageSource(eq), HistBefore = histBefore, HistAfter = histAfter };
+            });
+
+            ResultImage.Source = result.Image;
+            ResultImage.IsVisible = true;
+
+            // Mostra os dois histogramas
+            ShowHistogramBefore(result.HistBefore);
+            ShowHistogramAfter(result.HistAfter);
+            HistogramContainer.IsVisible = true;
+
+            LoadingIndicatorOperation.IsVisible = false;
+            LoadingIndicatorOperation.IsRunning = false;
+            ResultLabel.IsVisible = true;
+            SaveResultButton.IsVisible = true;
+        }
+
+        private void ShowHistogramBefore(int[] hist)
+        {
+            var entries = hist.Select((value, index) =>
+                new ChartEntry(value)
+                {
+                    Color = SKColor.Parse("#e74c3c")
+                }).ToList();
+
+            HistogramChartBefore.Chart = new BarChart
+            {
+                Entries = entries,
+                Margin = 5,
+                BackgroundColor = SKColors.White,
+            };
+        }
+
+        private void ShowHistogramAfter(int[] hist)
+        {
+            var entries = hist.Select((value, index) =>
+                new ChartEntry(value)
+                {
+                    Color = SKColor.Parse("#27ae60")
+                }).ToList();
+
+            HistogramChartAfter.Chart = new BarChart
+            {
+                Entries = entries,
+                Margin = 5,
+                BackgroundColor = SKColors.White,
+            };
         }
     }
 }

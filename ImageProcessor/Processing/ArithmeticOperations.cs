@@ -253,6 +253,7 @@ namespace ImageProcessor.Processing
             }
             return result;
         }
+
         public static SKColor[,] AbsoluteDifference(SKColor[,] a, SKColor[,] b)
         {
             int h = a.GetLength(0), w = a.GetLength(1);
@@ -292,14 +293,11 @@ namespace ImageProcessor.Processing
                 {
                     var colorA = a[y, x];
                     var colorB = b[y, x];
-
-                    // Soma com clipping em 255 (R1 = P + Q)
                     int redSum = Math.Min(colorA.Red + colorB.Red, 255);
                     int greenSum = Math.Min(colorA.Green + colorB.Green, 255);
                     int blueSum = Math.Min(colorA.Blue + colorB.Blue, 255);
                     int alphaSum = Math.Min(colorA.Alpha + colorB.Alpha, 255);
 
-                    // Divide por 2 (R2 = R1 / 2)
                     byte red = (byte)(redSum / 2);
                     byte green = (byte)(greenSum / 2);
                     byte blue = (byte)(blueSum / 2);
@@ -308,6 +306,118 @@ namespace ImageProcessor.Processing
                     result[y, x] = new SKColor(red, green, blue, alpha);
                 }
             }
+            return result;
+        }
+
+        public static SKColor[,] ImageNegative(SKColor[,] image)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    var pixel = image[y, x];
+
+                    byte r = (byte)(255 - pixel.Red);
+                    byte g = (byte)(255 - pixel.Green);
+                    byte b = (byte)(255 - pixel.Blue);
+
+                    result[y, x] = new SKColor(r, g, b, pixel.Alpha);
+                }
+            }
+
+            return result;
+        }
+
+        public static SKColor[,] Thresholding(SKColor[,] a)
+        {
+            int h = a.GetLength(0), w = a.GetLength(1);
+            var result = new SKColor[h, w];
+
+            Func<byte, byte> threshold = (byte value) => value <= 127 ? (byte)0 : (byte)255;
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    var pixel = a[y, x];
+
+                    byte red = threshold(pixel.Red);
+                    byte green = threshold(pixel.Green);
+                    byte blue = threshold(pixel.Blue);
+
+                    result[y, x] = new SKColor(red, green, blue, pixel.Alpha);
+                }
+            }
+
+            return result;
+        }
+
+        public static int[] GetHistogram(SKColor[,] a)
+        {
+            int h = a.GetLength(0), w = a.GetLength(1);
+            int[] hist = new int[256];
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    // Calcula a média dos canais RGB para obter o valor de cinza
+                    int grayValue = (a[y, x].Red + a[y, x].Green + a[y, x].Blue) / 3;
+                    hist[grayValue]++;
+                }
+            }
+
+            return hist;
+        }
+
+        public static SKColor[,] HistogramEqualization(SKColor[,] a)
+        {
+            int h = a.GetLength(0), w = a.GetLength(1);
+            var result = new SKColor[h, w];
+
+            // Passo 1: Criar histograma
+            int[] hist = new int[256];
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    hist[a[y, x].Red]++; // como a imagem já está em cinza, R=G=B
+                }
+            }
+
+            // Passo 2: Calcular CDF (distribuição acumulada)
+            int[] cdf = new int[256];
+            cdf[0] = hist[0];
+            for (int i = 1; i < 256; i++)
+            {
+                cdf[i] = cdf[i - 1] + hist[i];
+            }
+
+            // Passo 3: Normalizar CDF
+            int totalPixels = h * w;
+            int cdfMin = cdf.First(v => v > 0);
+            byte[] equalizedMap = new byte[256];
+
+            for (int i = 0; i < 256; i++)
+            {
+                equalizedMap[i] = (byte)Math.Floor(
+                    ((double)(cdf[i] - cdfMin) / (totalPixels - cdfMin)) * 255
+                );
+            }
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    byte newVal = equalizedMap[a[y, x].Red];
+                    result[y, x] = new SKColor(newVal, newVal, newVal, a[y, x].Alpha);
+                }
+            }
+
             return result;
         }
     }
