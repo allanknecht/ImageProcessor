@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<ContentPage
+    xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
+    xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
+    xmlns:toolkit="http://schemas.microsoft.com/dotnet/2022/maui/toolkit"
+    x:Class="ImageProcessor.Views.ConvolutionView"
+    Title="Spatial Filtering">
+    
+    <Grid>
+        <ScrollView>
+            <VerticalStackLayout Padding="20,80,20,20" Spacing="15">
+
+                <!-- Header -->
+                <Label Text="Convolution Operations" 
+                       FontSize="20" 
+                       HorizontalOptions="Center" />
+
+                <!-- Image Selection Section -->
+                <Button x:Name="ButtonSelectImage" 
+                        Text="Select Image" 
+                        Clicked="OnSelectImageClicked" />
+
+                <VerticalStackLayout Spacing="10" 
+                                   Padding="10" 
+                                   BackgroundColor="LightBlue">
+                    <ActivityIndicator x:Name="LoadingIndicator" 
+                                     IsVisible="False" 
+                                     IsRunning="False"
+                                     Color="DodgerBlue"
+                                     HeightRequest="50" />
+                    <Image x:Name="SelectedImage" 
+                           HeightRequest="200" 
+                           Aspect="AspectFit"
+                           IsVisible="False" />
+                </VerticalStackLayout>
+
+                <!-- Result Section -->
+                <Label x:Name="ResultLabel" 
+                       Text="Result" 
+                       FontSize="18" 
+                       HorizontalOptions="Center" 
+                       IsVisible="False"/>
+
+                <VerticalStackLayout Spacing="10" 
+                                   Padding="10" 
+                                   BackgroundColor="Lavender">
+                    <ActivityIndicator x:Name="LoadingIndicatorOperation" 
+                                     IsVisible="False" 
+                                     IsRunning="False"
+                                     Color="Purple"
+                                     HeightRequest="50" />
+                    <Image x:Name="ResultImage" 
+                           HeightRequest="220" 
+                           Aspect="AspectFit" 
+                           IsVisible="False" />
+                    <Button x:Name="SaveResultButton" 
+                            Text="💾 Save" 
+                            Clicked="OnSaveResultClicked" 
+                            IsVisible="False" 
+                            BackgroundColor="Green" 
+                            TextColor="White" />
+                </VerticalStackLayout>
+
+                <!-- Convolution Operations Section -->
+                <Label Text="Convolution Operations" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center"
+                       Margin="0,10,0,15"/>
+
+                <VerticalStackLayout Spacing="8" Padding="12">
+
+                    <!-- Example Operation -->
+                    <Button x:Name="Mean" 
+                            Text="MEAN" 
+                            Clicked="Mean_Clicked" />
+
+                    <Button x:Name="Min" 
+                            Text="MIN" 
+                            Clicked="Min_Clicked" />
+
+
+                    <Button x:Name="Man" 
+                            Text="MAX" 
+                            Clicked="Max_Clicked" />
+
+
+                </VerticalStackLayout>
+
+            </VerticalStackLayout>
+        </ScrollView>
+
+        <!-- Reload Button - Fixed Position -->
+        <Button Text="↻" 
+                BackgroundColor="DodgerBlue"
+                TextColor="White"
+                FontSize="20"
+                FontAttributes="Bold"
+                CornerRadius="25"
+                WidthRequest="50"
+                HeightRequest="50"
+                HorizontalOptions="End"
+                VerticalOptions="Start"
+                Margin="15,30,15,0"
+                Clicked="OnReloadClicked" />
+    </Grid>
+</ContentPage>

@@ -1,6 +1,8 @@
 ﻿using Microsoft.Extensions.Logging;
 using CommunityToolkit.Maui;
 using Microcharts.Maui;
+using ImageProcessor.Services;
+using ImageProcessor.ViewModels;
 
 namespace ImageProcessor
 {
@@ -12,12 +14,21 @@ namespace ImageProcessor
             builder
                 .UseMauiApp<App>()
                 .UseMauiCommunityToolkit()
-                .UseMicrocharts()  // Adicione esta linha
+                .UseMicrocharts() 
                 .ConfigureFonts(fonts =>
                 {
                     fonts.AddFont("OpenSans-Regular.ttf", "OpenSansRegular");
                     fonts.AddFont("OpenSans-Semibold.ttf", "OpenSansSemibold");
                 });
+
+            // Register services
+            builder.Services.AddSingleton<IImageProcessingService, ImageProcessingService>();
+            builder.Services.AddSingleton<IImageSelectionService, ImageSelectionService>();
+            builder.Services.AddSingleton<IImageSaveService, ImageSaveService>();
+            builder.Services.AddSingleton<IConvolutionService, ConvolutionService>();
+            builder.Services.AddTransient<ImageProcessingViewModel>();
+            builder.Services.AddTransient<ConvolutionViewModel>();
+
 #if DEBUG
             builder.Logging.AddDebug();
 #endif

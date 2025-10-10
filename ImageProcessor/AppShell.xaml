@@ -6,7 +6,19 @@
     xmlns:views="clr-namespace:ImageProcessor.Views"
     Title="ImageProcessor">
 
-    <!-- Página inicial -->
-    <ShellContent Title="Home" ContentTemplate="{DataTemplate views:MainPage}" Route="MainPage" />
+    <!-- Tab Bar for different operation types -->
+    <TabBar>
+        <!-- Arithmetic Operations Tab -->
+        <ShellContent Title="Arithmetic" 
+                      Icon="calculator.png" 
+                      ContentTemplate="{DataTemplate views:ImageTabsView}" 
+                      Route="Arithmetic" />
+        
+        <!-- Convolution Operations Tab -->
+        <ShellContent Title="Convolution" 
+                      Icon="filter.png" 
+                      ContentTemplate="{DataTemplate views:ConvolutionView}" 
+                      Route="Convolution" />
+    </TabBar>
 
 </Shell>
