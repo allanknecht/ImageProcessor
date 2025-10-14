@@ -1,5 +1,7 @@
 using Microsoft.Maui.Media;
 using SkiaSharp;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.PixelFormats;
 
 namespace ImageProcessor.Services
 {
@@ -23,11 +25,11 @@ namespace ImageProcessor.Services
         {
             try
             {
-                var result = await MediaPicker.PickPhotoAsync();
-                if (result == null) return null;
+                var fileResult = await FilePicker.Default.PickAsync();
+                if (fileResult == null) return null;
 
                 byte[] bytes;
-                using (var stream = await result.OpenReadAsync())
+                using (var stream = await fileResult.OpenReadAsync())
                 using (var ms = new MemoryStream())
                 {
                     await stream.CopyToAsync(ms);
@@ -40,7 +42,7 @@ namespace ImageProcessor.Services
                 return new ImageSelectionResult
                 {
                     Bytes = bytes,
-                    FileName = result.FileName ?? "Unknown",
+                    FileName = fileResult.FileName ?? "Unknown",
                     Matrix = matrix
                 };
             }
@@ -54,6 +56,13 @@ namespace ImageProcessor.Services
         {
             try
             {
+                // Primeiro, tenta detectar se é uma imagem TIFF
+                if (IsTiffImage(bytes))
+                {
+                    return ProcessTiffImage(bytes);
+                }
+
+                // Para outros formatos, usa SkiaSharp como antes
                 using var bitmap = SKBitmap.Decode(bytes);
                 if (bitmap == null) return null;
 
@@ -67,7 +76,68 @@ namespace ImageProcessor.Services
 
         public ImageSource CreateImageSource(byte[] bytes)
         {
+            // Se for uma imagem TIFF, converte para PNG para exibição
+            if (IsTiffImage(bytes))
+            {
+                return CreateTiffImageSource(bytes);
+            }
+            
             return ImageSource.FromStream(() => new MemoryStream(bytes));
+        }
+
+        private static bool IsTiffImage(byte[] bytes)
+        {
+            if (bytes.Length < 4) return false;
+            
+            // Verifica assinatura TIFF (II* ou MM*)
+            return (bytes[0] == 0x49 && bytes[1] == 0x49 && bytes[2] == 0x2A && bytes[3] == 0x00) ||
+                   (bytes[0] == 0x4D && bytes[1] == 0x4D && bytes[2] == 0x00 && bytes[3] == 0x2A);
+        }
+
+        private static SKColor[,]? ProcessTiffImage(byte[] bytes)
+        {
+            try
+            {
+                using var image = SixLabors.ImageSharp.Image.Load<Rgba32>(bytes);
+                
+                var matrix = new SKColor[image.Height, image.Width];
+                
+                // Acessa os pixels diretamente
+                for (int y = 0; y < image.Height; y++)
+                {
+                    for (int x = 0; x < image.Width; x++)
+                    {
+                        var pixel = image[x, y];
+                        matrix[y, x] = new SKColor(pixel.R, pixel.G, pixel.B, pixel.A);
+                    }
+                }
+
+                return matrix;
+            }
+            catch (Exception)
+            {
+                return null;
+            }
+        }
+
+        private static ImageSource CreateTiffImageSource(byte[] bytes)
+        {
+            try
+            {
+                using var image = SixLabors.ImageSharp.Image.Load(bytes);
+                using var memoryStream = new MemoryStream();
+                
+                // Converte a imagem TIFF para PNG
+                image.SaveAsPng(memoryStream);
+                var pngBytes = memoryStream.ToArray();
+                
+                return ImageSource.FromStream(() => new MemoryStream(pngBytes));
+            }
+            catch (Exception)
+            {
+                // Se falhar, retorna os bytes originais
+                return ImageSource.FromStream(() => new MemoryStream(bytes));
+            }
         }
 
         private static SKColor[,] ToMatrix(SKBitmap bitmap)
