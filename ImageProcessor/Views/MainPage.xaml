@@ -3,10 +3,10 @@
     xmlns="http://schemas.microsoft.com/dotnet/2021/maui"
     xmlns:x="http://schemas.microsoft.com/winfx/2009/xaml"
     x:Class="ImageProcessor.Views.MainPage"
-    Title="Menu Inicial">
+    Title="Main Menu">
 
     <VerticalStackLayout Padding="30" Spacing="20" VerticalOptions="Center" HorizontalOptions="Center">
-        <Button Text="Processar Imagens" Clicked="OnProcessImagesClicked" />
+        <Button Text="Process Images" Clicked="OnProcessImagesClicked" />
     </VerticalStackLayout>
 
 </ContentPage>

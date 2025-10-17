@@ -70,7 +70,7 @@
 
                 <VerticalStackLayout Spacing="8" Padding="12">
 
-                    <!-- Example Operation -->
+                    <!-- Operations -->
                     <Button x:Name="Mean" 
                             Text="MEAN" 
                             Clicked="Mean_Clicked" />
@@ -79,10 +79,20 @@
                             Text="MIN" 
                             Clicked="Min_Clicked" />
 
-
                     <Button x:Name="Man" 
                             Text="MAX" 
                             Clicked="Max_Clicked" />
+
+                    <Button x:Name="Median" 
+                            Text="MEDIAN" 
+                            Clicked="Median_Clicked" />
+
+                    <Button x:Name="Order" 
+                            Text="Order" 
+                            Clicked="Order_Clicked" />
+                    <Entry x:Name="OrderEntry" 
+                           Placeholder="Enter Order (e.g., 3)" 
+                           Keyboard="Numeric"/>
 
 
                 </VerticalStackLayout>

@@ -56,13 +56,13 @@ namespace ImageProcessor.Services
         {
             try
             {
-                // Primeiro, tenta detectar se é uma imagem TIFF
+                // First, try to detect if it's a TIFF image
                 if (IsTiffImage(bytes))
                 {
                     return ProcessTiffImage(bytes);
                 }
 
-                // Para outros formatos, usa SkiaSharp como antes
+                // For other formats, use SkiaSharp as before
                 using var bitmap = SKBitmap.Decode(bytes);
                 if (bitmap == null) return null;
 
@@ -76,7 +76,7 @@ namespace ImageProcessor.Services
 
         public ImageSource CreateImageSource(byte[] bytes)
         {
-            // Se for uma imagem TIFF, converte para PNG para exibição
+            // If it's a TIFF image, convert to PNG for display
             if (IsTiffImage(bytes))
             {
                 return CreateTiffImageSource(bytes);
@@ -89,7 +89,7 @@ namespace ImageProcessor.Services
         {
             if (bytes.Length < 4) return false;
             
-            // Verifica assinatura TIFF (II* ou MM*)
+            // Check TIFF signature (II* or MM*)
             return (bytes[0] == 0x49 && bytes[1] == 0x49 && bytes[2] == 0x2A && bytes[3] == 0x00) ||
                    (bytes[0] == 0x4D && bytes[1] == 0x4D && bytes[2] == 0x00 && bytes[3] == 0x2A);
         }
@@ -102,7 +102,7 @@ namespace ImageProcessor.Services
                 
                 var matrix = new SKColor[image.Height, image.Width];
                 
-                // Acessa os pixels diretamente
+                // Access pixels directly
                 for (int y = 0; y < image.Height; y++)
                 {
                     for (int x = 0; x < image.Width; x++)
@@ -127,7 +127,7 @@ namespace ImageProcessor.Services
                 using var image = SixLabors.ImageSharp.Image.Load(bytes);
                 using var memoryStream = new MemoryStream();
                 
-                // Converte a imagem TIFF para PNG
+                // Convert TIFF image to PNG
                 image.SaveAsPng(memoryStream);
                 var pngBytes = memoryStream.ToArray();
                 
@@ -135,7 +135,7 @@ namespace ImageProcessor.Services
             }
             catch (Exception)
             {
-                // Se falhar, retorna os bytes originais
+                // If it fails, return the original bytes
                 return ImageSource.FromStream(() => new MemoryStream(bytes));
             }
         }

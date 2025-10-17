@@ -154,5 +154,28 @@ namespace ImageProcessor.Views
                 "Select an image before applying the max filter."
             );
         }
+
+
+        private async void Median_Clicked(object sender, EventArgs e)
+        {
+            await ProcessOperationAsync(
+                () => _viewModel.ProcessImageAsync(Processing.ConvolutionOperations.MedianFilter),
+                "Select an image before applying the median filter."
+            );
+        }
+
+        private async void Order_Clicked(object sender, EventArgs e)
+        {
+            if (!_viewModel.TryParseInt(OrderEntry.Text, out var order) || order < 0 || order > 8)
+            {
+                await DisplayAlert("Error", "Enter a valid integer (>= 0 and <= 8) for the order.", "OK");
+                return;
+            }
+
+            await ProcessOperationAsync(
+                () => _viewModel.ProcessImageWithParameterAsync(order, Processing.ConvolutionOperations.OrderFilter),
+                "Select an image before applying the order filter."
+            );
+        }
     }
 }

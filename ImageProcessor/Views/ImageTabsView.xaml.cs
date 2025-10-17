@@ -98,7 +98,7 @@ namespace ImageProcessor.Views
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Erro", string.Format(AppConstants.Messages.ImageLoadError, ex.Message), "OK");
+                await DisplayAlert("Error", string.Format(AppConstants.Messages.ImageLoadError, ex.Message), "OK");
             }
             finally
             {
@@ -124,12 +124,12 @@ namespace ImageProcessor.Views
                 }
                 else
                 {
-                    await DisplayAlert("Atenção", errorMessage, "OK");
+                    await DisplayAlert("Attention", errorMessage, "OK");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Erro", string.Format(AppConstants.Messages.ProcessingError, ex.Message), "OK");
+                await DisplayAlert("Error", string.Format(AppConstants.Messages.ProcessingError, ex.Message), "OK");
             }
             finally
             {
@@ -151,7 +151,7 @@ namespace ImageProcessor.Views
         {
             await ProcessOperationAsync(
                 () => _viewModel.ProcessTwoImagesAsync(Processing.ArithmeticOperations.Subt),
-                "Selecione as duas imagens (A e B) antes de subtrair."
+                "Select both images (A and B) before subtracting."
             );
         }
 
@@ -159,7 +159,7 @@ namespace ImageProcessor.Views
         {
             await ProcessOperationAsync(
                 () => _viewModel.ProcessTwoImagesAsync(Processing.ArithmeticOperations.AbsoluteDifference),
-                "Selecione as duas imagens (A e B) antes de calcular a diferença."
+                "Select both images (A and B) before calculating the difference."
             );
         }
 
@@ -167,7 +167,7 @@ namespace ImageProcessor.Views
         {
             await ProcessOperationAsync(
                 () => _viewModel.ProcessTwoImagesAsync(Processing.ArithmeticOperations.Average),
-                "Selecione as duas imagens (A e B) antes de calcular a média."
+                "Select both images (A and B) before calculating the average."
             );
         }
 
@@ -176,19 +176,19 @@ namespace ImageProcessor.Views
         {
             if (!_viewModel.ValidateImages(_viewModel.MatrixA))
             {
-                await DisplayAlert("Atenção", "Selecione a imagem A antes de somar.", "OK");
+                await DisplayAlert("Attention", "Select image A before adding.", "OK");
                 return;
             }
 
             if (!_viewModel.TryParseFloat(SumValue.Text, out float value))
             {
-                await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
+                await DisplayAlert("Error", "Enter a valid numeric value", "OK");
                 return;
             }
 
             await ProcessOperationAsync(
                 () => _viewModel.ProcessImageWithValueAsync(value, Processing.ArithmeticOperations.AddValue),
-                "Erro ao processar imagem."
+                "Error processing image."
             );
         }
 
@@ -196,19 +196,19 @@ namespace ImageProcessor.Views
         {
             if (!_viewModel.ValidateImages(_viewModel.MatrixA))
             {
-                await DisplayAlert("Atenção", "Selecione a imagem A antes de subtrair.", "OK");
+                await DisplayAlert("Attention", "Select image A before subtracting.", "OK");
                 return;
             }
 
             if (!_viewModel.TryParseFloat(SubtValue.Text, out float value))
             {
-                await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
+                await DisplayAlert("Error", "Enter a valid numeric value", "OK");
                 return;
             }
 
             await ProcessOperationAsync(
                 () => _viewModel.ProcessImageWithValueAsync(value, Processing.ArithmeticOperations.SubtValue),
-                "Erro ao processar imagem."
+                "Error processing image."
             );
         }
 
@@ -216,19 +216,19 @@ namespace ImageProcessor.Views
         {
             if (!_viewModel.ValidateImages(_viewModel.MatrixA))
             {
-                await DisplayAlert("Atenção", "Selecione a imagem A antes de multiplicar.", "OK");
+                await DisplayAlert("Attention", "Select image A before multiplying.", "OK");
                 return;
             }
 
             if (!_viewModel.TryParseFloat(MultiplicationValue.Text, out float value))
             {
-                await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
+                await DisplayAlert("Error", "Enter a valid numeric value", "OK");
                 return;
             }
 
             await ProcessOperationAsync(
                 () => _viewModel.ProcessImageWithValueAsync(value, Processing.ArithmeticOperations.Multiplication),
-                "Erro ao processar imagem."
+                "Error processing image."
             );
         }
 
@@ -236,25 +236,25 @@ namespace ImageProcessor.Views
         {
             if (!_viewModel.ValidateImages(_viewModel.MatrixA))
             {
-                await DisplayAlert("Atenção", "Selecione a imagem A antes de dividir.", "OK");
+                await DisplayAlert("Attention", "Select image A before dividing.", "OK");
                 return;
             }
 
             if (!_viewModel.TryParseFloat(DivisionValue.Text, out float value))
             {
-                await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
+                await DisplayAlert("Error", "Enter a valid numeric value", "OK");
                 return;
             }
 
             if (Math.Abs(value) < float.Epsilon)
             {
-                await DisplayAlert("Erro", "Não é possível dividir por zero", "OK");
+                await DisplayAlert("Error", "Cannot divide by zero", "OK");
                 return;
             }
 
             await ProcessOperationAsync(
                 () => _viewModel.ProcessImageWithValueAsync(value, Processing.ArithmeticOperations.Division),
-                "Erro ao processar imagem."
+                "Error processing image."
             );
         }
 
@@ -262,19 +262,19 @@ namespace ImageProcessor.Views
         {
             if (!_viewModel.ValidateImages(_viewModel.MatrixA, _viewModel.MatrixB))
             {
-                await DisplayAlert("Atenção", "Selecione as duas imagens (A e B) antes de fazer o blending.", "OK");
+                await DisplayAlert("Attention", "Select both images (A and B) before blending.", "OK");
                 return;
             }
 
             if (!_viewModel.TryParseFloat(BlendingRatio.Text, out float ratio))
             {
-                await DisplayAlert("Erro", "Digite um valor numérico válido", "OK");
+                await DisplayAlert("Error", "Enter a valid numeric value", "OK");
                 return;
             }
 
             await ProcessOperationAsync(
                 () => _viewModel.ProcessImageWithValueAsync(ratio, (a, v) => Processing.ArithmeticOperations.LinearBlending(a, _viewModel.MatrixB, v)),
-                "Erro ao processar imagem."
+                "Error processing image."
             );
         }
 
@@ -283,7 +283,7 @@ namespace ImageProcessor.Views
         {
             await ProcessOperationAsync(
                 () => _viewModel.ProcessImageAsync(Processing.ArithmeticOperations.ConvertToGrayScale),
-                "Selecione a imagem A antes de converter."
+                "Select image A before converting."
             );
         }
 
@@ -291,7 +291,7 @@ namespace ImageProcessor.Views
         {
             await ProcessOperationAsync(
                 () => _viewModel.ProcessImageAsync(Processing.ArithmeticOperations.FlipLeftToRight),
-                "Selecione a imagem A antes de converter."
+                "Select image A before converting."
             );
         }
 
@@ -299,7 +299,7 @@ namespace ImageProcessor.Views
         {
             await ProcessOperationAsync(
                 () => _viewModel.ProcessImageAsync(Processing.ArithmeticOperations.FlipTopToBottom),
-                "Selecione a imagem A antes de converter."
+                "Select image A before converting."
             );
         }
 
@@ -307,7 +307,7 @@ namespace ImageProcessor.Views
         {
             await ProcessOperationAsync(
                 () => _viewModel.ProcessImageAsync(Processing.ArithmeticOperations.ImageNegative),
-                "Selecione a imagem A antes de converter."
+                "Select image A before converting."
             );
         }
 
@@ -315,7 +315,7 @@ namespace ImageProcessor.Views
         {
             await ProcessOperationAsync(
                 () => _viewModel.ProcessImageAsync(Processing.ArithmeticOperations.Thresholding),
-                "Selecione a imagem A antes de converter."
+                "Select image A before converting."
             );
         }
 
@@ -340,12 +340,12 @@ namespace ImageProcessor.Views
                 }
                 else
                 {
-                    await DisplayAlert("Atenção", "Selecione a imagem A antes de converter.", "OK");
+                    await DisplayAlert("Attention", "Select image A before converting.", "OK");
                 }
             }
             catch (Exception ex)
             {
-                await DisplayAlert("Erro", string.Format(AppConstants.Messages.ProcessingError, ex.Message), "OK");
+                await DisplayAlert("Error", string.Format(AppConstants.Messages.ProcessingError, ex.Message), "OK");
             }
             finally
             {
@@ -359,18 +359,18 @@ namespace ImageProcessor.Views
             var imageBytes = _viewModel.GetLastProcessedImageBytes();
             if (imageBytes == null)
             {
-                await DisplayAlert("Atenção", "Não há imagem para salvar.", "OK");
+                await DisplayAlert("Attention", "No image to save.", "OK");
                 return;
             }
 
-            bool success = await _imageSaveService.SaveImageAsync(imageBytes, "resultado");
+            bool success = await _imageSaveService.SaveImageAsync(imageBytes, "result");
             if (success)
             {
-                await DisplayAlert("Sucesso", "Imagem salva com sucesso!", "OK");
+                await DisplayAlert("Success", "Image saved successfully!", "OK");
             }
             else
             {
-                await DisplayAlert("Erro", "Não foi possível salvar a imagem.", "OK");
+                await DisplayAlert("Error", "Could not save the image.", "OK");
             }
         }
     }

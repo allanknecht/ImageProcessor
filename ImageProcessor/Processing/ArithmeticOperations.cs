@@ -13,7 +13,7 @@ namespace ImageProcessor.Processing
         {
             int h = a.GetLength(0), w = a.GetLength(1);
             if (h != b.GetLength(0) || w != b.GetLength(1))
-                throw new ArgumentException("Imagens não têm o mesmo tamanho");
+                throw new ArgumentException("Images do not have the same size");
 
             var result = new SKColor[h, w];
 
@@ -42,7 +42,7 @@ namespace ImageProcessor.Processing
         {
             int h = a.GetLength(0), w = a.GetLength(1);
             if (h != b.GetLength(0) || w != b.GetLength(1))
-                throw new ArgumentException("Imagens não têm o mesmo tamanho");
+                throw new ArgumentException("Images do not have the same size");
 
             var result = new SKColor[h, w];
 
@@ -224,7 +224,7 @@ namespace ImageProcessor.Processing
         {
             int h = a.GetLength(0), w = a.GetLength(1);
             if (h != b.GetLength(0) || w != b.GetLength(1))
-                throw new ArgumentException("Imagens não têm o mesmo tamanho");
+                throw new ArgumentException("Images do not have the same size");
 
             var result = new SKColor[h, w];
 
@@ -258,7 +258,7 @@ namespace ImageProcessor.Processing
         {
             int h = a.GetLength(0), w = a.GetLength(1);
             if (h != b.GetLength(0) || w != b.GetLength(1))
-                throw new ArgumentException("Imagens não têm o mesmo tamanho");
+                throw new ArgumentException("Images do not have the same size");
 
             var result = new SKColor[h, w];
 
@@ -283,7 +283,7 @@ namespace ImageProcessor.Processing
         {
             int h = a.GetLength(0), w = a.GetLength(1);
             if (h != b.GetLength(0) || w != b.GetLength(1))
-                throw new ArgumentException("Imagens não têm o mesmo tamanho");
+                throw new ArgumentException("Images do not have the same size");
 
             var result = new SKColor[h, w];
 
@@ -365,7 +365,7 @@ namespace ImageProcessor.Processing
             {
                 for (int x = 0; x < w; x++)
                 {
-                    // Calcula a média dos canais RGB para obter o valor de cinza
+                    // Calculate the average of RGB channels to get the gray value
                     int grayValue = (a[y, x].Red + a[y, x].Green + a[y, x].Blue) / 3;
                     hist[grayValue]++;
                 }
@@ -379,17 +379,17 @@ namespace ImageProcessor.Processing
             int h = a.GetLength(0), w = a.GetLength(1);
             var result = new SKColor[h, w];
 
-            // Passo 1: Criar histograma
+            // Step 1: Create histogram
             int[] hist = new int[256];
             for (int y = 0; y < h; y++)
             {
                 for (int x = 0; x < w; x++)
                 {
-                    hist[a[y, x].Red]++; // como a imagem já está em cinza, R=G=B
+                    hist[a[y, x].Red]++; // since the image is already grayscale, R=G=B
                 }
             }
 
-            // Passo 2: Calcular CDF (distribuição acumulada)
+            // Step 2: Calculate CDF (cumulative distribution)
             int[] cdf = new int[256];
             cdf[0] = hist[0];
             for (int i = 1; i < 256; i++)
@@ -397,7 +397,7 @@ namespace ImageProcessor.Processing
                 cdf[i] = cdf[i - 1] + hist[i];
             }
 
-            // Passo 3: Normalizar CDF
+            // Step 3: Normalize CDF
             int totalPixels = h * w;
             int cdfMin = cdf.First(v => v > 0);
             byte[] equalizedMap = new byte[256];

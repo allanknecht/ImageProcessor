@@ -10,30 +10,30 @@ namespace ImageProcessor.Processing
             int w = image.GetLength(1);
             var result = new SKColor[h, w];
 
-            // Evitar bordas (padding = 1)
+            // Avoid borders (padding = 1)
             for (int y = 1; y < h - 1; y++)
             {
                 for (int x = 1; x < w - 1; x++)
                 {
-                    // PIXEL CENTRAL: f(x, y) = p
+                    // CENTRAL PIXEL: f(x, y) = p
                     var centerPixel = image[y, x];
-                    
-                    // VIZINHOS - LINHA SUPERIOR (y-1)
+
+                    // NEIGHBORS - TOP ROW (y-1)
                     var topLeft = image[y - 1, x - 1];     // f(x-1, y-1)
                     var topCenter = image[y - 1, x];       // f(x, y-1)
                     var topRight = image[y - 1, x + 1];    // f(x+1, y-1)
-                    
-                    // VIZINHOS - LINHA CENTRAL (y)
+
+                    // NEIGHBORS - CENTRAL ROW (y)
                     var centerLeft = image[y, x - 1];      // f(x-1, y)
-                    // centerPixel já é f(x, y)
+                    // centerPixel is already f(x, y)
                     var centerRight = image[y, x + 1];     // f(x+1, y)
-                    
-                    // VIZINHOS - LINHA INFERIOR (y+1)
+
+                    // NEIGHBORS - BOTTOM ROW (y+1)
                     var bottomLeft = image[y + 1, x - 1];  // f(x-1, y+1)
                     var bottomCenter = image[y + 1, x];    // f(x, y+1)
                     var bottomRight = image[y + 1, x + 1]; // f(x+1, y+1)
-                    
-                    // Calcular média dos 9 vizinhos
+
+                    // Calculate average of 9 neighbors
                     int totalR = 0, totalG = 0, totalB = 0;
 
                     totalR += topLeft.Red + topCenter.Red + topRight.Red +
@@ -48,7 +48,7 @@ namespace ImageProcessor.Processing
                               centerLeft.Blue + centerPixel.Blue + centerRight.Blue +
                               bottomLeft.Blue + bottomCenter.Blue + bottomRight.Blue;
 
-                    // Dividir por 9 e criar novo pixel
+                    // Divide by 9 and create new pixel
                     byte newR = (byte)(totalR / 9);
                     byte newG = (byte)(totalG / 9);
                     byte newB = (byte)(totalB / 9);
@@ -56,8 +56,8 @@ namespace ImageProcessor.Processing
                     result[y, x] = new SKColor(newR, newG, newB, centerPixel.Alpha);
                 }
             }
-            
-            // Copiar bordas sem processamento
+
+            // Copy borders without processing
             for (int y = 0; y < h; y++)
             {
                 for (int x = 0; x < w; x++)
@@ -78,25 +78,25 @@ namespace ImageProcessor.Processing
             int w = image.GetLength(1);
             var result = new SKColor[h, w];
 
-            // Evitar bordas (padding = 1)
+            // Avoid borders (padding = 1)
             for (int y = 1; y < h - 1; y++)
             {
                 for (int x = 1; x < w - 1; x++)
                 {
-                    // PIXEL CENTRAL: f(x, y) = p
+                    // CENTRAL PIXEL: f(x, y) = p
                     var centerPixel = image[y, x];
 
-                    // VIZINHOS - LINHA SUPERIOR (y-1)
+                    // NEIGHBORS - TOP ROW (y-1)
                     var topLeft = image[y - 1, x - 1];     // f(x-1, y-1)
                     var topCenter = image[y - 1, x];       // f(x, y-1)
                     var topRight = image[y - 1, x + 1];    // f(x+1, y-1)
 
-                    // VIZINHOS - LINHA CENTRAL (y)
+                    // NEIGHBORS - CENTRAL ROW (y)
                     var centerLeft = image[y, x - 1];      // f(x-1, y)
-                    // centerPixel já é f(x, y)
+                    // centerPixel is already f(x, y)
                     var centerRight = image[y, x + 1];     // f(x+1, y)
 
-                    // VIZINHOS - LINHA INFERIOR (y+1)
+                    // NEIGHBORS - BOTTOM ROW (y+1)
                     var bottomLeft = image[y + 1, x - 1];  // f(x-1, y+1)
                     var bottomCenter = image[y + 1, x];    // f(x, y+1)
                     var bottomRight = image[y + 1, x + 1]; // f(x+1, y+1)
@@ -137,25 +137,25 @@ namespace ImageProcessor.Processing
             int w = image.GetLength(1);
             var result = new SKColor[h, w];
 
-            // Evitar bordas (padding = 1)
+            // Avoid borders (padding = 1)
             for (int y = 1; y < h - 1; y++)
             {
                 for (int x = 1; x < w - 1; x++)
                 {
-                    // PIXEL CENTRAL: f(x, y) = p
+                    // CENTRAL PIXEL: f(x, y) = p
                     var centerPixel = image[y, x];
 
-                    // VIZINHOS - LINHA SUPERIOR (y-1)
+                    // NEIGHBORS - TOP ROW (y-1)
                     var topLeft = image[y - 1, x - 1];     // f(x-1, y-1)
                     var topCenter = image[y - 1, x];       // f(x, y-1)
                     var topRight = image[y - 1, x + 1];    // f(x+1, y-1)
 
-                    // VIZINHOS - LINHA CENTRAL (y)
+                    // NEIGHBORS - CENTRAL ROW (y)
                     var centerLeft = image[y, x - 1];      // f(x-1, y)
-                    // centerPixel já é f(x, y)
+                    // centerPixel is already f(x, y)
                     var centerRight = image[y, x + 1];     // f(x+1, y)
 
-                    // VIZINHOS - LINHA INFERIOR (y+1)
+                    // NEIGHBORS - BOTTOM ROW (y+1)
                     var bottomLeft = image[y + 1, x - 1];  // f(x-1, y+1)
                     var bottomCenter = image[y + 1, x];    // f(x, y+1)
                     var bottomRight = image[y + 1, x + 1]; // f(x+1, y+1)
@@ -189,5 +189,164 @@ namespace ImageProcessor.Processing
 
             return result;
         }
+
+        public static SKColor[,] MedianFilter(SKColor[,] image)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            // Avoid borders (padding = 1)
+            for (int y = 1; y < h - 1; y++)
+            {
+                for (int x = 1; x < w - 1; x++)
+                {
+                    // CENTRAL PIXEL: f(x, y) = p
+                    var centerPixel = image[y, x];
+
+                    // NEIGHBORS - TOP ROW (y-1)
+                    var topLeft = image[y - 1, x - 1];     // f(x-1, y-1)
+                    var topCenter = image[y - 1, x];       // f(x, y-1)
+                    var topRight = image[y - 1, x + 1];    // f(x+1, y-1)
+
+                    // NEIGHBORS - CENTRAL ROW (y)
+                    var centerLeft = image[y, x - 1];      // f(x-1, y)
+                    // centerPixel is already f(x, y)
+                    var centerRight = image[y, x + 1];     // f(x+1, y)
+
+                    // NEIGHBORS - BOTTOM ROW (y+1)
+                    var bottomLeft = image[y + 1, x - 1];  // f(x-1, y+1)
+                    var bottomCenter = image[y + 1, x];    // f(x, y+1)
+                    var bottomRight = image[y + 1, x + 1]; // f(x+1, y+1)
+
+
+
+                    var MedianArrayR = new byte[] {
+                        topLeft.Red,    topCenter.Red,    topRight.Red,
+                        centerLeft.Red, centerPixel.Red,  centerRight.Red,
+                        bottomLeft.Red, bottomCenter.Red, bottomRight.Red
+                    };
+                                        var MedianArrayG = new byte[] {
+                        topLeft.Green,    topCenter.Green,    topRight.Green,
+                        centerLeft.Green, centerPixel.Green,  centerRight.Green,
+                        bottomLeft.Green, bottomCenter.Green, bottomRight.Green
+                    };
+                                        var MedianArrayB = new byte[] {
+                        topLeft.Blue,    topCenter.Blue,    topRight.Blue,
+                        centerLeft.Blue, centerPixel.Blue,  centerRight.Blue,
+                        bottomLeft.Blue, bottomCenter.Blue, bottomRight.Blue
+                    };
+
+                     Array.Sort(MedianArrayR);
+                     Array.Sort(MedianArrayG);
+                     Array.Sort(MedianArrayB);
+
+                     const int mid = 4; // 9 elements -> central index (median)
+                     byte newR = MedianArrayR[mid];
+                     byte newG = MedianArrayG[mid];
+                     byte newB = MedianArrayB[mid];
+
+
+                    result[y, x] = new SKColor(newR, newG, newB, centerPixel.Alpha);
+                }
+            }
+
+            // Copy borders without processing
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
+                    {
+                        result[y, x] = image[y, x];
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
+
+
+
+
+
+        public static SKColor[,] OrderFilter(SKColor[,] image, int order)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            // Avoid borders (padding = 1)
+            for (int y = 1; y < h - 1; y++)
+            {
+                for (int x = 1; x < w - 1; x++)
+                {
+                    // CENTRAL PIXEL: f(x, y) = p
+                    var centerPixel = image[y, x];
+
+                    // NEIGHBORS - TOP ROW (y-1)
+                    var topLeft = image[y - 1, x - 1];     // f(x-1, y-1)
+                    var topCenter = image[y - 1, x];       // f(x, y-1)
+                    var topRight = image[y - 1, x + 1];    // f(x+1, y-1)
+
+                    // NEIGHBORS - CENTRAL ROW (y)
+                    var centerLeft = image[y, x - 1];      // f(x-1, y)
+                    // centerPixel is already f(x, y)
+                    var centerRight = image[y, x + 1];     // f(x+1, y)
+
+                    // NEIGHBORS - BOTTOM ROW (y+1)
+                    var bottomLeft = image[y + 1, x - 1];  // f(x-1, y+1)
+                    var bottomCenter = image[y + 1, x];    // f(x, y+1)
+                    var bottomRight = image[y + 1, x + 1]; // f(x+1, y+1)
+
+
+
+                    var MedianArrayR = new byte[] {
+                        topLeft.Red,    topCenter.Red,    topRight.Red,
+                        centerLeft.Red, centerPixel.Red,  centerRight.Red,
+                        bottomLeft.Red, bottomCenter.Red, bottomRight.Red
+                    };
+                    var MedianArrayG = new byte[] {
+                        topLeft.Green,    topCenter.Green,    topRight.Green,
+                        centerLeft.Green, centerPixel.Green,  centerRight.Green,
+                        bottomLeft.Green, bottomCenter.Green, bottomRight.Green
+                    };
+                    var MedianArrayB = new byte[] {
+                        topLeft.Blue,    topCenter.Blue,    topRight.Blue,
+                        centerLeft.Blue, centerPixel.Blue,  centerRight.Blue,
+                        bottomLeft.Blue, bottomCenter.Blue, bottomRight.Blue
+                    };
+
+                    Array.Sort(MedianArrayR);
+                    Array.Sort(MedianArrayG);
+                    Array.Sort(MedianArrayB);
+
+                    byte newR = MedianArrayR[order];
+                    byte newG = MedianArrayG[order];
+                    byte newB = MedianArrayB[order];
+
+
+                    result[y, x] = new SKColor(newR, newG, newB, centerPixel.Alpha);
+                }
+            }
+
+            // Copy borders without processing
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
+                    {
+                        result[y, x] = image[y, x];
+                    }
+                }
+            }
+
+            return result;
+        }
+
+
     }
 }
