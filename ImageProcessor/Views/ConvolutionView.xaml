@@ -91,7 +91,20 @@
                             Text="Order" 
                             Clicked="Order_Clicked" />
                     <Entry x:Name="OrderEntry" 
-                           Placeholder="Enter Order (e.g., 3)" 
+                           Placeholder="Enter Order" 
+                           Keyboard="Numeric"/>
+
+                    <Button
+                            x:Name="ConservativeSmoothingButton"
+                            Text="Apply Conservative Smoothing"
+                            Clicked="ConservativeSmoothingButton_Clicked" />
+
+                    <Button
+                            x:Name="GaussianBlur"
+                            Text="Gaussian Blur"
+                            Clicked="GaussianBlur_Clicked" />
+                    <Entry x:Name="SigmaEntry" 
+                           Placeholder="Sigma Order" 
                            Keyboard="Numeric"/>
 
 

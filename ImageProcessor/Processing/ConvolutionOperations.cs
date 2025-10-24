@@ -348,5 +348,153 @@ namespace ImageProcessor.Processing
         }
 
 
-    }
+        public static SKColor[,] ConservativeSmoothing(SKColor[,] image)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            for (int y = 1; y < h - 1; y++)
+            {
+                for (int x = 1; x < w - 1; x++)
+                {
+                    var center = image[y, x];
+
+                    // Pega todos os 8 vizinhos (sem o pixel central)
+                    var neighbors = new[]
+                    {
+                        image[y - 1, x - 1], image[y - 1, x], image[y - 1, x + 1],
+                        image[y, x - 1],                      image[y, x + 1],
+                        image[y + 1, x - 1], image[y + 1, x], image[y + 1, x + 1]
+                    };
+
+                    // Calcula min e max para cada canal (R, G, B)
+                    byte minR = neighbors.Min(p => p.Red);
+                    byte maxR = neighbors.Max(p => p.Red);
+                    byte minG = neighbors.Min(p => p.Green);
+                    byte maxG = neighbors.Max(p => p.Green);
+                    byte minB = neighbors.Min(p => p.Blue);
+                    byte maxB = neighbors.Max(p => p.Blue);
+
+                    byte newR = center.Red;
+                    byte newG = center.Green;
+                    byte newB = center.Blue;
+
+                    // Regra do filtro conservativo
+                    if (center.Red > maxR) newR = maxR;
+                    else if (center.Red < minR) newR = minR;
+
+                    if (center.Green > maxG) newG = maxG;
+                    else if (center.Green < minG) newG = minG;
+
+                    if (center.Blue > maxB) newB = maxB;
+                    else if (center.Blue < minB) newB = minB;
+
+                    result[y, x] = new SKColor(newR, newG, newB, center.Alpha);
+                }
+            }
+
+            // Copia bordas sem alterar
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
+                        result[y, x] = image[y, x];
+                }
+            }
+
+            return result;
+        }
+
+
+        public static SKColor[,] GaussianBlur(SKColor[,] image, double sigma)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            // Kernel fixo 5x5
+            int r = 2;
+            int kernelSize = 5;
+            double[,] kernel = new double[kernelSize, kernelSize];
+            double sum = 0.0;
+
+            // Calcula o kernel Gaussiano
+            double coeff = 1.0 / (2.0 * Math.PI * sigma * sigma);
+            double twoSigma2 = 2.0 * sigma * sigma;
+
+            for (int y = -r; y <= r; y++)
+            {
+                for (int x = -r; x <= r; x++)
+                {
+                    double value = coeff * Math.Exp(-(x * x + y * y) / twoSigma2);
+                    kernel[y + r, x + r] = value;
+                    sum += value;
+                }
+            }
+
+            // Normaliza para somar 1
+            for (int y = 0; y < kernelSize; y++)
+            {
+                for (int x = 0; x < kernelSize; x++)
+                {
+                    kernel[y, x] /= sum;
+                }
+            }
+
+            // Aplica convolução 5x5
+            // fica o valor do r como sendo a borda não alterada
+            for (int y = r; y < h - r; y++)
+            {
+                for (int x = r; x < w - r; x++)
+                {
+                    double accR = 0, accG = 0, accB = 0;
+
+                    for (int ky = -r; ky <= r; ky++)
+                    {
+                        for (int kx = -r; kx <= r; kx++)
+                        {
+                            var p = image[y + ky, x + kx];
+                            double wgt = kernel[ky + r, kx + r];
+                            accR += p.Red * wgt;
+                            accG += p.Green * wgt;
+                            accB += p.Blue * wgt;
+                        }
+                    }
+
+                    byte r8 = (byte)Math.Clamp(Math.Round(accR), 0, 255);
+                    byte g8 = (byte)Math.Clamp(Math.Round(accG), 0, 255);
+                    byte b8 = (byte)Math.Clamp(Math.Round(accB), 0, 255);
+                    result[y, x] = new SKColor(r8, g8, b8, image[y, x].Alpha);
+                }
+            }
+
+            // Copia bordas sem alterar
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    if (y < r || y >= h - r || x < r || x >= w - r)
+                        result[y, x] = image[y, x];
+                }
+            }
+
+            return result;
+        }
+
+
+
+
+
+}
+
+
+
+
+
+
+
+
+
 }

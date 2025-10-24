@@ -5,6 +5,7 @@ using SkiaSharp;
 using ImageProcessor.Services;
 using ImageProcessor.ViewModels;
 using ImageProcessor.Constants;
+using ImageProcessor.Processing;
 
 namespace ImageProcessor.Views
 {
@@ -177,5 +178,32 @@ namespace ImageProcessor.Views
                 "Select an image before applying the order filter."
             );
         }
+
+        private async void ConservativeSmoothingButton_Clicked(object sender, EventArgs e)
+        {
+            await ProcessOperationAsync(
+            () => _viewModel.ProcessImageAsync(Processing.ConvolutionOperations.ConservativeSmoothing),
+            "Select an image before applying the Conservative Smoothing filter."
+        );
+        }
+
+        private async void GaussianBlur_Clicked(object sender, EventArgs e)
+        {
+            if (!_viewModel.TryParseDouble(SigmaEntry.Text, out var sigma) || sigma <= 0.0)
+            {
+                await DisplayAlert("Error", "Enter a valid sigma value (> 0).", "OK");
+                return;
+            }
+
+            await ProcessOperationAsync(
+                () => _viewModel.ProcessImageWithDoubleParameterAsync(
+                    sigma,
+                    ConvolutionOperations.GaussianBlur
+                ),
+                "Select an image before applying the Gaussian Blur."
+            );
+        }
+
+
     }
 }
