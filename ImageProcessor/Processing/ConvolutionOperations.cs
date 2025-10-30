@@ -620,14 +620,12 @@ namespace ImageProcessor.Processing
             int w = image.GetLength(1);
             var result = new SKColor[h, w];
 
-            // Evita as bordas (padding = 1)
             for (int y = 1; y < h - 1; y++)
             {
                 for (int x = 1; x < w - 1; x++)
                 {
                     var centerPixel = image[y, x];
 
-                    // Vizinhos
                     var topLeft = image[y - 1, x - 1];
                     var topCenter = image[y - 1, x];
                     var topRight = image[y - 1, x + 1];
@@ -639,21 +637,31 @@ namespace ImageProcessor.Processing
                     var bottomCenter = image[y + 1, x];
                     var bottomRight = image[y + 1, x + 1];
 
+                    // Kernel Laplaciano da imagem a/b (KernelV)
+                    int KernelV_R = topCenter.Red + centerLeft.Red + centerRight.Red + bottomCenter.Red - 4 * centerPixel.Red;
+                    int KernelV_G = topCenter.Green + centerLeft.Green + centerRight.Green + bottomCenter.Green - 4 * centerPixel.Green;
+                    int KernelV_B = topCenter.Blue + centerLeft.Blue + centerRight.Blue + bottomCenter.Blue - 4 * centerPixel.Blue;
 
-                    int newR = (centerPixel.Red * 4) - (topCenter.Red + centerLeft.Red + centerRight.Red + bottomCenter.Red);
-                    int newG = (centerPixel.Green * 4) - (topCenter.Green + centerLeft.Green + centerRight.Green + bottomCenter.Green);
-                    int newB = (centerPixel.Blue * 4) - (topCenter.Blue + centerLeft.Blue + centerRight.Blue + bottomCenter.Blue);
+                    // Kernel Laplaciano da imagem c/d (KernelH)
+                    int KernelH_R = 4 * centerPixel.Red - (topCenter.Red + centerLeft.Red + centerRight.Red + bottomCenter.Red);
+                    int KernelH_G = 4 * centerPixel.Green - (topCenter.Green + centerLeft.Green + centerRight.Green + bottomCenter.Green);
+                    int KernelH_B = 4 * centerPixel.Blue - (topCenter.Blue + centerLeft.Blue + centerRight.Blue + bottomCenter.Blue);
 
-                    // Normaliza resultado (limita entre 0 e 255)
-                    newR = Math.Clamp(newR, 0, 255);
-                    newG = Math.Clamp(newG, 0, 255);
-                    newB = Math.Clamp(newB, 0, 255);
+                    // Combina os dois kernels
+                    int finalR = (int)Math.Sqrt(KernelV_R * KernelV_R + KernelH_R * KernelH_R);
+                    int finalG = (int)Math.Sqrt(KernelV_G * KernelV_G + KernelH_G * KernelH_G);
+                    int finalB = (int)Math.Sqrt(KernelV_B * KernelV_B + KernelH_B * KernelH_B);
 
-                    result[y, x] = new SKColor((byte)newR, (byte)newG, (byte)newB, centerPixel.Alpha);
+                    // Normaliza
+                    finalR = Math.Clamp(finalR, 0, 255);
+                    finalG = Math.Clamp(finalG, 0, 255);
+                    finalB = Math.Clamp(finalB, 0, 255);
+
+                    result[y, x] = new SKColor((byte)finalR, (byte)finalG, (byte)finalB, centerPixel.Alpha);
                 }
             }
 
-            // Copia bordas sem processar
+            // Copia bordas
             for (int y = 0; y < h; y++)
             {
                 for (int x = 0; x < w; x++)
@@ -667,6 +675,8 @@ namespace ImageProcessor.Processing
 
             return result;
         }
+
+
 
 
 
