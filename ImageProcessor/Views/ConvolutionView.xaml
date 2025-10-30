@@ -108,6 +108,22 @@
                            Keyboard="Numeric"/>
 
 
+                    <Button
+                            x:Name="Prewit"
+                            Text="Prewit"
+                            Clicked="Prewit_Clicked" />
+
+                    <Button
+                            x:Name="Sobel"
+                            Text="Sobel"
+                            Clicked="Sobel_Clicked" />
+                    
+                    <Button
+                            x:Name="Laplacian"
+                            Text="Laplacian"
+                            Clicked="Laplacian_Clicked" />
+
+
                 </VerticalStackLayout>
 
             </VerticalStackLayout>

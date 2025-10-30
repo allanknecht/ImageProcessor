@@ -204,6 +204,28 @@ namespace ImageProcessor.Views
             );
         }
 
+        private async void Prewit_Clicked(object sender, EventArgs e)
+        {
+            await ProcessOperationAsync(
+            () => _viewModel.ProcessImageAsync(Processing.ConvolutionOperations.Prewit),
+            "Select an image before applying the Conservative Smoothing filter."
+            );
+        }
 
+        private async void Sobel_Clicked(object sender, EventArgs e)
+        {
+            await ProcessOperationAsync(
+            () => _viewModel.ProcessImageAsync(Processing.ConvolutionOperations.Sobel),
+            "Select an image before applying the Conservative Smoothing filter."
+            );
+        }
+
+        private async void Laplacian_Clicked(object sender, EventArgs e)
+        {
+            await ProcessOperationAsync(
+            () => _viewModel.ProcessImageAsync(Processing.ConvolutionOperations.Laplacian),
+            "Select an image before applying the Conservative Smoothing filter."
+            );
+        }
     }
 }

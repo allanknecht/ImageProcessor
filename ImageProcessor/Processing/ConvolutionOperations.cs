@@ -483,18 +483,194 @@ namespace ImageProcessor.Processing
             return result;
         }
 
+        public static SKColor[,] Prewit(SKColor[,] image)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            // Avoid borders (padding = 1)
+            for (int y = 1; y < h - 1; y++)
+            {
+                for (int x = 1; x < w - 1; x++)
+                {
+                    // CENTRAL PIXEL: f(x, y) = p
+                    var centerPixel = image[y, x];
+
+                    // NEIGHBORS - TOP ROW (y-1)
+                    var topLeft = image[y - 1, x - 1];     // f(x-1, y-1)
+                    var topCenter = image[y - 1, x];       // f(x, y-1)
+                    var topRight = image[y - 1, x + 1];    // f(x+1, y-1)
+
+                    // NEIGHBORS - CENTRAL ROW (y)
+                    var centerLeft = image[y, x - 1];      // f(x-1, y)
+                    // centerPixel is already f(x, y)
+                    var centerRight = image[y, x + 1];     // f(x+1, y)
+
+                    // NEIGHBORS - BOTTOM ROW (y+1)
+                    var bottomLeft = image[y + 1, x - 1];  // f(x-1, y+1)
+                    var bottomCenter = image[y + 1, x];    // f(x, y+1)
+                    var bottomRight = image[y + 1, x + 1]; // f(x+1, y+1)
+
+                    var KernelV_R = topLeft.Red + centerLeft.Red + bottomLeft.Red + topRight.Red*(-1) + centerRight.Red*(-1) + bottomRight.Red*(-1);
+                    var KernelV_G = topLeft.Green + centerLeft.Green + bottomLeft.Green + topRight.Green * (-1) + centerRight.Green * (-1) + bottomRight.Green * (-1);
+                    var KernelV_B = topLeft.Blue + centerLeft.Blue + bottomLeft.Blue + topRight.Blue * (-1) + centerRight.Blue * (-1) + bottomRight.Blue * (-1);
+
+                    var KernelH_G = topLeft.Green + topCenter.Green + topRight.Green + bottomLeft.Green * (-1) + bottomCenter.Green * (-1) + bottomRight.Green * (-1);
+                    var KernelH_R = topLeft.Red + topCenter.Red + topRight.Red + bottomLeft.Red * (-1) + bottomCenter.Red * (-1) + bottomRight.Red * (-1);
+                    var KernelH_B = topLeft.Blue + topCenter.Blue + topRight.Blue + bottomLeft.Blue * (-1) + bottomCenter.Blue * (-1) + bottomRight.Blue * (-1);
+
+                    byte newR = (byte)Math.Clamp(Math.Sqrt(KernelV_R * KernelV_R + KernelH_R * KernelH_R), 0, 255);
+                    byte newG = (byte)Math.Clamp(Math.Sqrt(KernelV_G * KernelV_G + KernelH_G * KernelH_G), 0, 255);
+                    byte newB = (byte)Math.Clamp(Math.Sqrt(KernelV_B * KernelV_B + KernelH_B * KernelH_B), 0, 255);
+
+
+                    result[y, x] = new SKColor(newR, newG, newB, centerPixel.Alpha);
+                }
+            }
+
+            // Copy borders without processing
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
+                    {
+                        result[y, x] = image[y, x];
+                    }
+                }
+            }
+
+            return result;
+        }
 
 
 
 
-}
+
+
+
+        public static SKColor[,] Sobel(SKColor[,] image)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            // Avoid borders (padding = 1)
+            for (int y = 1; y < h - 1; y++)
+            {
+                for (int x = 1; x < w - 1; x++)
+                {
+                    // CENTRAL PIXEL: f(x, y) = p
+                    var centerPixel = image[y, x];
+
+                    // NEIGHBORS - TOP ROW (y-1)
+                    var topLeft = image[y - 1, x - 1];     // f(x-1, y-1)
+                    var topCenter = image[y - 1, x];       // f(x, y-1)
+                    var topRight = image[y - 1, x + 1];    // f(x+1, y-1)
+
+                    // NEIGHBORS - CENTRAL ROW (y)
+                    var centerLeft = image[y, x - 1];      // f(x-1, y)
+                    // centerPixel is already f(x, y)
+                    var centerRight = image[y, x + 1];     // f(x+1, y)
+
+                    // NEIGHBORS - BOTTOM ROW (y+1)
+                    var bottomLeft = image[y + 1, x - 1];  // f(x-1, y+1)
+                    var bottomCenter = image[y + 1, x];    // f(x, y+1)
+                    var bottomRight = image[y + 1, x + 1]; // f(x+1, y+1)
+
+                    var KernelV_R = topLeft.Red + centerLeft.Red*2 + bottomLeft.Red + topRight.Red * (-1) + centerRight.Red * (-2) + bottomRight.Red * (-1);
+                    var KernelV_G = topLeft.Green + centerLeft.Green*2 + bottomLeft.Green + topRight.Green * (-1) + centerRight.Green * (-2) + bottomRight.Green * (-1);
+                    var KernelV_B = topLeft.Blue + centerLeft.Blue*2 + bottomLeft.Blue + topRight.Blue * (-1) + centerRight.Blue * (-2) + bottomRight.Blue * (-1);
+
+                    var KernelH_G = topLeft.Green + topCenter.Green*2 + topRight.Green + bottomLeft.Green * (-1) + bottomCenter.Green * (-2) + bottomRight.Green * (-1);
+                    var KernelH_R = topLeft.Red + topCenter.Red*2 + topRight.Red + bottomLeft.Red * (-1) + bottomCenter.Red * (-2) + bottomRight.Red * (-1);
+                    var KernelH_B = topLeft.Blue + topCenter.Blue*2 + topRight.Blue + bottomLeft.Blue * (-1) + bottomCenter.Blue * (-2) + bottomRight.Blue * (-1);
+
+                    byte newR = (byte)Math.Clamp(Math.Sqrt(KernelV_R * KernelV_R + KernelH_R * KernelH_R), 0, 255);
+                    byte newG = (byte)Math.Clamp(Math.Sqrt(KernelV_G * KernelV_G + KernelH_G * KernelH_G), 0, 255);
+                    byte newB = (byte)Math.Clamp(Math.Sqrt(KernelV_B * KernelV_B + KernelH_B * KernelH_B), 0, 255);
+
+
+                    result[y, x] = new SKColor(newR, newG, newB, centerPixel.Alpha);
+                }
+            }
+
+            // Copy borders without processing
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
+                    {
+                        result[y, x] = image[y, x];
+                    }
+                }
+            }
+
+            return result;
+        }
 
 
 
 
+        public static SKColor[,] Laplacian(SKColor[,] image)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            // Evita as bordas (padding = 1)
+            for (int y = 1; y < h - 1; y++)
+            {
+                for (int x = 1; x < w - 1; x++)
+                {
+                    var centerPixel = image[y, x];
+
+                    // Vizinhos
+                    var topLeft = image[y - 1, x - 1];
+                    var topCenter = image[y - 1, x];
+                    var topRight = image[y - 1, x + 1];
+
+                    var centerLeft = image[y, x - 1];
+                    var centerRight = image[y, x + 1];
+
+                    var bottomLeft = image[y + 1, x - 1];
+                    var bottomCenter = image[y + 1, x];
+                    var bottomRight = image[y + 1, x + 1];
+
+
+                    int newR = (centerPixel.Red * 4) - (topCenter.Red + centerLeft.Red + centerRight.Red + bottomCenter.Red);
+                    int newG = (centerPixel.Green * 4) - (topCenter.Green + centerLeft.Green + centerRight.Green + bottomCenter.Green);
+                    int newB = (centerPixel.Blue * 4) - (topCenter.Blue + centerLeft.Blue + centerRight.Blue + bottomCenter.Blue);
+
+                    // Normaliza resultado (limita entre 0 e 255)
+                    newR = Math.Clamp(newR, 0, 255);
+                    newG = Math.Clamp(newG, 0, 255);
+                    newB = Math.Clamp(newB, 0, 255);
+
+                    result[y, x] = new SKColor((byte)newR, (byte)newG, (byte)newB, centerPixel.Alpha);
+                }
+            }
+
+            // Copia bordas sem processar
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
+                    {
+                        result[y, x] = image[y, x];
+                    }
+                }
+            }
+
+            return result;
+        }
 
 
 
 
+    }
 
 }
