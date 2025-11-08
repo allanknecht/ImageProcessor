@@ -87,25 +87,35 @@
                             Text="MEDIAN" 
                             Clicked="Median_Clicked" />
 
-                    <Button x:Name="Order" 
+                    <HorizontalStackLayout Spacing="8">
+                        <Button x:Name="Order" 
                             Text="Order" 
-                            Clicked="Order_Clicked" />
-                    <Entry x:Name="OrderEntry" 
-                           Placeholder="Enter Order" 
-                           Keyboard="Numeric"/>
+                            Clicked="Order_Clicked" 
+                            WidthRequest="160"/>
+                        <Label Text="Order:" VerticalOptions="Center"/>
+                        <Entry x:Name="OrderEntry" 
+                            Placeholder="0–8" 
+                            Keyboard="Numeric"
+                            WidthRequest="80"/>
+                    </HorizontalStackLayout>
 
                     <Button
                             x:Name="ConservativeSmoothingButton"
                             Text="Apply Conservative Smoothing"
                             Clicked="ConservativeSmoothingButton_Clicked" />
 
-                    <Button
+                    <HorizontalStackLayout Spacing="8">
+                        <Button
                             x:Name="GaussianBlur"
                             Text="Gaussian Blur"
-                            Clicked="GaussianBlur_Clicked" />
-                    <Entry x:Name="SigmaEntry" 
-                           Placeholder="Sigma Order" 
-                           Keyboard="Numeric"/>
+                            Clicked="GaussianBlur_Clicked" 
+                            WidthRequest="160"/>
+                        <Label Text="Sigma:" VerticalOptions="Center"/>
+                        <Entry x:Name="SigmaEntry" 
+                            Placeholder="1.0" 
+                            Keyboard="Numeric"
+                            WidthRequest="80"/>
+                    </HorizontalStackLayout>
 
 
                     <Button
@@ -122,6 +132,42 @@
                             x:Name="Laplacian"
                             Text="Laplacian"
                             Clicked="Laplacian_Clicked" />
+
+                </VerticalStackLayout>
+
+                <!-- Morphological Operations Section -->
+                <Label Text="Morphological Operations" 
+                       FontSize="18" 
+                       FontAttributes="Bold" 
+                       HorizontalOptions="Center"
+                       Margin="0,10,0,15"/>
+
+                <VerticalStackLayout Spacing="8" Padding="12">
+
+                    <Button
+                            x:Name="Dilation"
+                            Text="Dilation"
+                            Clicked="Dilation_Clicked" />
+
+                    <Button
+                            x:Name="Erosion"
+                            Text="Erosion"
+                            Clicked="Erosion_Clicked" />
+
+                    <Button
+                            x:Name="Opening"
+                            Text="Opening"
+                            Clicked="Opening_Clicked" />
+
+                    <Button
+                            x:Name="Closing"
+                            Text="Closing"
+                            Clicked="Closing_Clicked" />
+
+                    <Button
+                            x:Name="Contour"
+                            Text="Contour"
+                            Clicked="Contour_Clicked" />
 
 
                 </VerticalStackLayout>

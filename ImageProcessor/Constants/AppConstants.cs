@@ -13,6 +13,7 @@ namespace ImageProcessor.Constants
             public const string SaveError = "Could not save the image.";
             public const string ProcessingError = "Error during processing: {0}";
             public const string ImageLoadError = "Could not load the image: {0}";
+            public const string BinaryImageRequired = "Dilation operation requires a binary image (black and white only, values 0 or 255).";
         }
 
         public static class UI

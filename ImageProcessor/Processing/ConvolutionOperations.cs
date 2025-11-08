@@ -443,8 +443,8 @@ namespace ImageProcessor.Processing
                 }
             }
 
-            // Aplica convolução 5x5
-            // fica o valor do r como sendo a borda não alterada
+            // Aplica convoluï¿½ï¿½o 5x5
+            // fica o valor do r como sendo a borda nï¿½o alterada
             for (int y = r; y < h - r; y++)
             {
                 for (int x = r; x < w - r; x++)
@@ -676,9 +676,151 @@ namespace ImageProcessor.Processing
             return result;
         }
 
+        public static SKColor[,] Dilation(SKColor[,] image)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            for (int y = 1; y < h - 1; y++)
+            {
+                for (int x = 1; x < w - 1; x++)
+                {
+                    var centerPixel = image[y, x];
+                    var topCenter = image[y - 1, x];
+                    var centerLeft = image[y, x - 1];
+                    var centerRight = image[y, x + 1];
+                    var bottomCenter = image[y + 1, x];
+
+                    // Verifica se algum pixel da cruz Ã© difernente de 0
+                    bool anyForeground =
+                        (centerPixel.Red != 0 || centerPixel.Green != 0 || centerPixel.Blue != 0) ||
+                        (topCenter.Red != 0 || topCenter.Green != 0 || topCenter.Blue != 0) ||
+                        (centerLeft.Red != 0 || centerLeft.Green != 0 || centerLeft.Blue != 0) ||
+                        (centerRight.Red != 0 || centerRight.Green != 0 || centerRight.Blue != 0) ||
+                        (bottomCenter.Red != 0 || bottomCenter.Green != 0 || bottomCenter.Blue != 0);
+
+                    // Se algum pixel for foreground, o pixel central vira branco
+                    if (anyForeground)
+                    {
+                        result[y, x] = new SKColor(255, 255, 255, centerPixel.Alpha);
+                    }
+                    else
+                    {
+                        result[y, x] = new SKColor(0, 0, 0, centerPixel.Alpha);
+                    }
+                }
+            }
+
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
+                    {
+                        result[y, x] = image[y, x];
+                    }
+                }
+            }
+
+            return result;
+        }
 
 
 
+        public static SKColor[,] Erosion(SKColor[,] image)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            for (int y = 1; y < h - 1; y++)
+            {
+                for (int x = 1; x < w - 1; x++)
+                {
+                    var centerPixel = image[y, x];
+                    var topCenter = image[y - 1, x];
+                    var centerLeft = image[y, x - 1];
+                    var centerRight = image[y, x + 1];
+                    var bottomCenter = image[y + 1, x];
+
+                    // Verifica se TODOS os pixels da cruz sÃ£o diferentes de 0
+                    bool allForeground =
+                        (centerPixel.Red != 0 || centerPixel.Green != 0 || centerPixel.Blue != 0) &&
+                        (topCenter.Red != 0 || topCenter.Green != 0 || topCenter.Blue != 0) &&
+                        (centerLeft.Red != 0 || centerLeft.Green != 0 || centerLeft.Blue != 0) &&
+                        (centerRight.Red != 0 || centerRight.Green != 0 || centerRight.Blue != 0) &&
+                        (bottomCenter.Red != 0 || bottomCenter.Green != 0 || bottomCenter.Blue != 0);
+
+                    if (allForeground)
+                    {
+                        result[y, x] = new SKColor(255, 255, 255, centerPixel.Alpha);
+                    }
+                    else
+                    {
+                        result[y, x] = new SKColor(0, 0, 0, centerPixel.Alpha);
+                    }
+                }
+            }
+
+            // Copia bordas originais
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    if (y == 0 || y == h - 1 || x == 0 || x == w - 1)
+                    {
+                        result[y, x] = image[y, x];
+                    }
+                }
+            }
+
+            return result;
+        }
+        
+        public static SKColor[,] Opening(SKColor[,] image)
+        {
+            var eroded = Erosion(image);
+            var opened = Dilation(eroded);
+
+            return opened;
+        }
+
+        public static SKColor[,] Closing(SKColor[,] image)
+        {
+            var dilated = Dilation(image);
+            var closed = Erosion(dilated);
+
+            return closed;
+        }
+
+        public static SKColor[,] Contour(SKColor[,] image)
+        {
+            int h = image.GetLength(0);
+            int w = image.GetLength(1);
+            var result = new SKColor[h, w];
+
+            var eroded = Erosion(image);
+
+            // Contorno = Imagem Original - ErosÃ£o
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    var orig = image[y, x];
+                    var ero = eroded[y, x];
+
+                    // Calcula a diferenÃ§a entre os canais (saturando em 0)
+                    byte r = (byte)Math.Max(0, orig.Red - ero.Red);
+                    byte g = (byte)Math.Max(0, orig.Green - ero.Green);
+                    byte b = (byte)Math.Max(0, orig.Blue - ero.Blue);
+
+                    result[y, x] = new SKColor(r, g, b, orig.Alpha);
+                }
+            }
+
+            return result;
+        }
 
 
     }

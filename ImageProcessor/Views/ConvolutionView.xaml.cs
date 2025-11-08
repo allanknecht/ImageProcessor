@@ -227,5 +227,106 @@ namespace ImageProcessor.Views
             "Select an image before applying the Conservative Smoothing filter."
             );
         }
+
+        private async void Dilation_Clicked(object sender, EventArgs e)
+        {
+            if (!_viewModel.ValidateImage(_viewModel.Matrix))
+            {
+                await DisplayAlert("Attention", "Select an image before applying the Dilation operation.", "OK");
+                return;
+            }
+
+            // if (!_viewModel.ValidateBinaryImage(_viewModel.Matrix))
+            // {
+            //     await DisplayAlert("Error", AppConstants.Messages.BinaryImageRequired, "OK");
+            //     return;
+            // }
+
+            await ProcessOperationAsync(
+                () => _viewModel.ProcessImageAsync(Processing.ConvolutionOperations.Dilation),
+                "Select an image before applying the Dilation operation."
+            );
+        }
+
+        private async void Erosion_Clicked(object sender, EventArgs e)
+        {
+            if (!_viewModel.ValidateImage(_viewModel.Matrix))
+            {
+                await DisplayAlert("Attention", "Select an image before applying the Dilation operation.", "OK");
+                return;
+            }
+
+            // if (!_viewModel.ValidateBinaryImage(_viewModel.Matrix))
+            // {
+            //     await DisplayAlert("Error", AppConstants.Messages.BinaryImageRequired, "OK");
+            //     return;
+            // }
+
+            await ProcessOperationAsync(
+                () => _viewModel.ProcessImageAsync(Processing.ConvolutionOperations.Erosion),
+                "Select an image before applying the Dilation operation."
+            );
+        }
+
+        private async void Opening_Clicked(object sender, EventArgs e)
+        {
+            if (!_viewModel.ValidateImage(_viewModel.Matrix))
+            {
+                await DisplayAlert("Attention", "Select an image before applying the Opening operation.", "OK");
+                return;
+            }
+
+            // if (!_viewModel.ValidateBinaryImage(_viewModel.Matrix))
+            // {
+            //     await DisplayAlert("Error", AppConstants.Messages.BinaryImageRequired, "OK");
+            //     return;
+            // }
+
+            await ProcessOperationAsync(
+                () => _viewModel.ProcessImageAsync(Processing.ConvolutionOperations.Opening),
+                "Select an image before applying the Opening operation."
+            );
+        }
+
+        private async void Closing_Clicked(object sender, EventArgs e)
+        {
+            if (!_viewModel.ValidateImage(_viewModel.Matrix))
+            {
+                await DisplayAlert("Attention", "Select an image before applying the Closing operation.", "OK");
+                return;
+            }
+
+            //if (!_viewModel.ValidateBinaryImage(_viewModel.Matrix))
+            //{
+            //    await DisplayAlert("Error", AppConstants.Messages.BinaryImageRequired, "OK");
+            //    return;
+            //}
+
+            await ProcessOperationAsync(
+                () => _viewModel.ProcessImageAsync(Processing.ConvolutionOperations.Closing),
+                "Select an image before applying the Closing operation."
+            );
+        }
+
+        private async void Contour_Clicked(object sender, EventArgs e)
+        {
+            if (!_viewModel.ValidateImage(_viewModel.Matrix))
+            {
+                await DisplayAlert("Attention", "Select an image before applying the Contour operation.", "OK");
+                return;
+            }
+
+            // if (!_viewModel.ValidateBinaryImage(_viewModel.Matrix))
+            // {
+            //     await DisplayAlert("Error", AppConstants.Messages.BinaryImageRequired, "OK");
+            //     return;
+            // }
+
+            await ProcessOperationAsync(
+                () => _viewModel.ProcessImageAsync(Processing.ConvolutionOperations.Contour),
+                "Select an image before applying the Contour operation."
+            );
+        }
+
     }
 }

@@ -127,6 +127,8 @@ namespace ImageProcessor.ViewModels
 
         public bool ValidateImage(SKColor[,] matrix) => _convolutionService.ValidateImage(matrix);
 
+        public bool ValidateBinaryImage(SKColor[,] matrix) => _convolutionService.ValidateBinaryImage(matrix);
+
         public bool TryParseInt(string value, out int result) => _convolutionService.TryParseInt(value, out result);
 
         public bool TryParseDouble(string value, out double result) => _convolutionService.TryParseDouble(value, out result);

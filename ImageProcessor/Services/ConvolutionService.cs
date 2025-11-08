@@ -11,6 +11,7 @@ namespace ImageProcessor.Services
         Task<ImageSource> ProcessImageWithDoubleParameterAsync(SKColor[,] matrix, double parameter, Func<SKColor[,], double, SKColor[,]> operation);
         Task<ImageSource> ProcessImageWithKernelAsync(SKColor[,] matrix, float[,] kernel, Func<SKColor[,], float[,], SKColor[,]> operation);
         bool ValidateImage(SKColor[,] matrix);
+        bool ValidateBinaryImage(SKColor[,] matrix);
         bool TryParseInt(string value, out int result);
         bool TryParseDouble(string value, out double result);
         byte[]? GetLastProcessedImageBytes();
@@ -59,6 +60,34 @@ namespace ImageProcessor.Services
         public bool ValidateImage(SKColor[,] matrix)
         {
             return matrix != null;
+        }
+
+        public bool ValidateBinaryImage(SKColor[,] matrix)
+        {
+            if (matrix == null)
+                return false;
+
+            int h = matrix.GetLength(0);
+            int w = matrix.GetLength(1);
+
+            // Verifica se todos os pixels têm apenas valores 0 ou 255 em cada canal RGB
+            for (int y = 0; y < h; y++)
+            {
+                for (int x = 0; x < w; x++)
+                {
+                    var pixel = matrix[y, x];
+                    
+                    // Verifica se cada canal é 0 ou 255
+                    if ((pixel.Red != 0 && pixel.Red != 255) ||
+                        (pixel.Green != 0 && pixel.Green != 255) ||
+                        (pixel.Blue != 0 && pixel.Blue != 255))
+                    {
+                        return false;
+                    }
+                }
+            }
+
+            return true;
         }
 
         public bool TryParseInt(string value, out int result)
