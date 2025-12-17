@@ -2,11 +2,11 @@
 
 Image processing application developed with .NET MAUI featuring various arithmetic operations and convolution filters.
 
-## ­ƒôï About the Project
+## 📋 About the Project
 
 ImageProcessor is a cross-platform application developed with .NET MAUI that allows performing various image processing operations, including basic arithmetic operations, convolution filters, histogram equalization, and morphological operations.
 
-## Ô£¿ Features
+## ✨ Features
 
 ### Arithmetic Operations
 - **Addition** - Sum of two images or addition of constant value
@@ -45,7 +45,7 @@ ImageProcessor is a cross-platform application developed with .NET MAUI that all
 - **Closing** - Dilation followed by erosion
 - **Contour** - Contour extraction
 
-## ­ƒøá´©Å Technologies Used
+## 🛠️ Technologies Used
 
 - **.NET 9.0** - Base framework
 - **.NET MAUI** - Cross-platform framework
@@ -54,12 +54,12 @@ ImageProcessor is a cross-platform application developed with .NET MAUI that all
 - **CommunityToolkit.Maui** - Components and utilities
 - **Microcharts.Maui** - Charts/histograms visualization
 
-## ­ƒôª Supported Platforms
+## 📦 Supported Platforms
 
 - **Windows** (Windows 10.0.17763.0 or higher)
 - **Android** (API 21 or higher)
 
-## ­ƒÜÇ How to Run
+## 🚀 How to Run
 
 ### Prerequisites
 
@@ -93,29 +93,29 @@ dotnet run --project ImageProcessor/ImageProcessor.csproj
 dotnet build -t:Run -f net9.0-android
 ```
 
-## ­ƒôü Project Structure
+## 📁 Project Structure
 
 ```
 ImageProcessor/
-Ôö£ÔöÇÔöÇ Processing/
-Ôöé   Ôö£ÔöÇÔöÇ ArithmeticOperations.cs      # Arithmetic operations
-Ôöé   ÔööÔöÇÔöÇ ConvolutionOperations.cs     # Convolution filters
-Ôö£ÔöÇÔöÇ Services/
-Ôöé   Ôö£ÔöÇÔöÇ ImageProcessingService.cs    # Main processing service
-Ôöé   Ôö£ÔöÇÔöÇ ImageSelectionService.cs     # Image selection
-Ôöé   Ôö£ÔöÇÔöÇ ImageSaveService.cs          # Image saving
-Ôöé   ÔööÔöÇÔöÇ ConvolutionService.cs        # Convolution service
-Ôö£ÔöÇÔöÇ ViewModels/
-Ôöé   Ôö£ÔöÇÔöÇ BaseViewModel.cs             # Base ViewModel
-Ôöé   Ôö£ÔöÇÔöÇ ImageProcessingViewModel.cs  # Processing ViewModel
-Ôöé   ÔööÔöÇÔöÇ ConvolutionViewModel.cs      # Convolution ViewModel
-ÔööÔöÇÔöÇ Views/
-    Ôö£ÔöÇÔöÇ MainPage.xaml                # Main page
-    Ôö£ÔöÇÔöÇ ImageTabsView.xaml           # Image visualization
-    ÔööÔöÇÔöÇ ConvolutionView.xaml         # Convolution interface
+├── Processing/
+│   ├── ArithmeticOperations.cs      # Arithmetic operations
+│   └── ConvolutionOperations.cs     # Convolution filters
+├── Services/
+│   ├── ImageProcessingService.cs    # Main processing service
+│   ├── ImageSelectionService.cs     # Image selection
+│   ├── ImageSaveService.cs          # Image saving
+│   └── ConvolutionService.cs        # Convolution service
+├── ViewModels/
+│   ├── BaseViewModel.cs             # Base ViewModel
+│   ├── ImageProcessingViewModel.cs  # Processing ViewModel
+│   └── ConvolutionViewModel.cs      # Convolution ViewModel
+└── Views/
+    ├── MainPage.xaml                # Main page
+    ├── ImageTabsView.xaml           # Image visualization
+    └── ConvolutionView.xaml         # Convolution interface
 ```
 
-## ­ƒÄ» Usage
+## 🎯 Usage
 
 1. Open the application
 2. Select one or two images (depending on the operation)
@@ -124,18 +124,18 @@ ImageProcessor/
 5. View the result and histograms (when applicable)
 6. Save the processed image
 
-## ­ƒôØ Notes
+## 📝 Notes
 
 - Images must have the same size for operations involving two images
 - Some filters preserve the original image borders
 - Histogram equalization works better with grayscale images
 - Morphological operations are more effective on binary images
 
-## ­ƒôä License
+## 📄 License
 
 This project was developed as part of an academic work.
 
-## ­ƒæñ Author
+## 👤 Author
 
 Developed as an academic image processing project.
 
